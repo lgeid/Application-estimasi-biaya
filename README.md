@@ -1,2 +1,2 @@
 # Application-estimasi-biaya
-Agar mempermudah memberi estimasi biaya customer
+Estimasi biaya untuk customer

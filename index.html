@@ -515,16 +515,16 @@
         <img src="https://files.catbox.moe/qksxi0.svg" alt="LG Logo" class="splash-logo">
     </div>
 
-    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">📋 Buka Panduan</button>
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">📋 Panduan</button>
 
     <div class="sidebar" id="guideSidebar">
         <h4 class="sidebar-title">Panduan Aplikasi</h4>
         <ul class="step-list">
-            <li class="step-item"><span class="step-num">1</span><strong>Metode Layanan:</strong> Tentukan penanganan dibawa ke bengkel (Carry-In) atau kunjungan teknisi (In-Home).</li>
+            <li class="step-item"><span class="step-num">1</span><strong>Metode Layanan:</strong> Tentukan penanganan dibawa ke service center (Carry-In) atau kunjungan teknisi (In-Home).</li>
             <li class="step-item"><span class="step-num">2</span><strong>Pilih Perangkat:</strong> Pilih tipe produk elektronik yang bermasalah pada menu dropdown utama.</li>
             <li class="step-item"><span class="step-num">3</span><strong>Freon Otomatis:</strong> Opsi freon akan muncul khusus jika tipe produk kulkas atau AC dipilih.</li>
-            <li class="step-item"><span class="step-num">4</span><strong>Suku Cadang:</strong> Centang opsi sparepart jika ada penggantian komponen fisik untuk menambahkan daftar pengeluaran belanja.</li>
-            <li class="step-item"><span class="step-num">5</span><strong>Bagikan Hasil:</strong> Klik tombol ekspor di bawah untuk menyalin/membagikan estimasi biaya ke WhatsApp konsumen.</li>
+            <li class="step-item"><span class="step-num">4</span><strong>Suku Cadang:</strong> Centang opsi sparepart jika ada penrgantian komponen fisik untuk menambahkan daftar dan total biaya.</li>
+            <li class="step-item"><span class="step-num">5</span><strong>Bagikan Hasil:</strong> Klik tombol ekspor di bawah untuk menyalin/membagikan estimasi biaya ke WhatsApp.</li>
         </ul>
     </div>
 
@@ -532,7 +532,7 @@
         <div class="container">
             <div class="header-wrapper">
                 <div>
-                    <div class="brand-title">LG Service Electronics Indonesia</div>
+                    <div class="brand-title">LG Service Electronics</div>
                     <div class="brand-subtitle">ESTIMASI BIAYA PERBAIKAN</div>
                 </div>
                 <div class="header-meta">
@@ -545,7 +545,7 @@
             </div>
 
             <div class="form-group">
-                <label>Metode Penanganan Layanan</label>
+                <label>Tipe Layanan</label>
                 <div class="radio-group">
                     <label class="radio-label">
                         <input type="radio" name="service_type" value="in_shop" checked onchange="calculatePrice()"> Carry-In (Bawa ke Service center)
@@ -558,7 +558,7 @@
 
             <div id="inHomePanel" class="form-group sub-panel" style="display: none;">
                 <label class="checkbox-label">
-                    <input type="checkbox" id="eveningCare" onchange="calculatePrice()"> Aktifkan Penanganan Malam Hari (Evening Care)
+                    <input type="checkbox" id="eveningCare" onchange="calculatePrice()"> EC(Evening Care)
                 </label>
             </div>
 
@@ -603,12 +603,12 @@
                         <option value="ref_sbs_cancel" data-minor="145000" data-mayor="145000" data-special="145000" data-hide-part="yes" data-is-cancel="yes">Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="10. AC (Semua PK penggunaan rumah tangga)">
-                        <option value="ac" data-type="refrigeration" data-minor="110000" data-mayor="300000" data-special="420000">Repaire only</option>
-                        <option value="ac_cancel" data-minor="110000" data-mayor="110000" data-special="110000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / Diagnosa</option>
+                        <option value="ac" data-type="refrigeration" data-minor="110000" data-mayor="300000" data-special="420000">Repaire</option>
+                        <option value="ac_cancel" data-minor="110000" data-mayor="110000" data-special="110000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
                     </optgroup>
                     <optgroup label="11. Audio, Microwave, HP">
-                        <option value="audio_etc" data-minor="160000" data-mayor="160000" data-special="200000">Repaire only</option>
-                        <option value="audio_etc_cancel" data-minor="80000" data-mayor="80000" data-special="80000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / Diagnosa</option>
+                        <option value="audio_etc" data-minor="160000" data-mayor="160000" data-special="200000">Repaire</option>
+                        <option value="audio_etc_cancel" data-minor="80000" data-mayor="80000" data-special="80000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
                     </optgroup>
                 </select>
             </div>
@@ -631,7 +631,7 @@
 
             <div class="form-group" id="sparepartToggleGroup">
                 <label class="checkbox-label">
-                    <input type="checkbox" id="sparepart" onchange="onSparepartToggleChange()"> Tindakan Perbaikan Disertai Penggantian Suku Cadang
+                    <input type="checkbox" id="sparepart" onchange="onSparepartToggleChange()"> Perbaikan dengan pergantian sapre part
                 </label>
             </div>
 
@@ -668,7 +668,7 @@
                     <span id="labelVisitPrice">Rp 45.000</span>
                 </div>
                 <div class="result-row" id="rowEvening" style="display: none;">
-                    <span>Insentif Tambahan Evening Care:</span>
+                    <span>EC (Evening Care):</span>
                     <span id="labelEveningPrice">Rp 150.000</span>
                 </div>
                 <div class="result-row" id="rowFreonTotal" style="display: none;">
@@ -676,15 +676,15 @@
                     <span id="res-freon">Rp 0</span>
                 </div>
                 <div class="result-row" id="rowPartsTotal" style="display: none;">
-                    <span>Akumulasi Nilai Suku Cadang:</span>
+                    <span>Total biaya Suku Cadang:</span>
                     <span id="res-parts">Rp 0</span>
                 </div>
                 <div class="result-row">
-                    <span>Penambahan PPN (11%):</span>
+                    <span>PPN (11%):</span>
                     <span id="res-ppn">Rp 0</span>
                 </div>
                 <div class="result-row total-row">
-                    <span>Total Akhir Pembayaran:</span>
+                    <span>Total Keseluruhan:</span>
                     <span id="res-total">Rp 0</span>
                 </div>
                 
@@ -948,7 +948,7 @@
 
         function createInvoiceText() {
             let txt = `*Yth. Pelanggan LG Electronics*\n`;
-            txt += `Berikut rincian biaya penanganan perbaikan perangkat Anda:\n\n`;
+            txt += `Berikut rincian biaya  perbaikan produk Anda:\n\n`;
             txt += `• *Perangkat:* ${dataGlobal.deviceText}\n`;
             txt += `• *Metode Layanan:* ${dataGlobal.metode}\n`;
             txt += `=========================\n\n`;
@@ -981,7 +981,7 @@
             txt += `\n-------------------------\n`;
             txt += `• PPN (11%): ${formatCurrency(dataGlobal.ppn)}\n`;
             txt += `• *TOTAL PEMBAYARAN:* *${formatCurrency(dataGlobal.total)}*\n\n`;
-            txt += `*Note:* harga yang tertera hanya estimasi / perkiraan , lebih detailnya akan di sampaikan tehnisi di lapangan sesuai dengan kerusakan ,  spek dan tipe produk anda.\n\n`;
+            txt += `*Note:* harga yang tertera hanya estimasi / perkiraan , lebih detailnya akan di sampaikan teknisi kami di lapangan sesuai dengan kerusakan ,  spesifikasi dan tipe produk anda.\n\n`;
             txt += `Terima kasih telah mempercayai layanan resmi LG Service Center.`;
             return txt;
         }

@@ -2,24 +2,13 @@
 <html lang="id" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>LG Electronics - Sistem Laporan & Simulasi biaya Service</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kalkulator Layanan LG Service Electronics</title>
     <style>
+        /* --- Tema Warna & Variabel Premium --- */
         :root {
-            --lg-red: #A50034;
-            --lg-dark-red: #8C002B;
-            --lg-gray-900: #1A1A1A;
-            --lg-gray-700: #333333;
-            --lg-gray-400: #999999;
-            --lg-gray-100: #F5F5F5;
-            --lg-white: #FFFFFF;
-            --lg-border: #E0E0E0;
-
-            --status-new: #FFF3CD;
-            --status-process: #CFE2FF;
-            --status-done: #D1E7DD;
-
-            --card-bg: rgba(255, 255, 255, 0.96); 
+            --bg-color: #f4f5f7;
+            --card-bg: rgba(255, 255, 255, 0.94); 
             --text-color: #212529;
             --text-muted: #5a626a;
             --border-color: rgba(0, 0, 0, 0.08);
@@ -27,27 +16,18 @@
             --primary-hover: #800026;
             --accent-bg: rgba(0, 0, 0, 0.02);
             --input-border: #ced4da;
-            --shadow: 0 12px 40px rgba(165, 0, 52, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
-            --overlay-bg: rgba(0, 0, 0, 0.55);
-            
-            --color-tv: #165DFF;
-            --color-mesin-cuci: #00B42A;
-            --color-kulkas: #F7BA1E;
-            --color-ac: #722ED1;
-            --color-lainnya: #F53F3F;
+            --shadow: 0 12px 40px rgba(165, 0, 52, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
+            --badge-minor: #2a9d8f;
+            --badge-mayor: #e9c46a;
+            --badge-special: #e76f51;
+            --share-color: #0076d6;
+            --share-hover: #005eb3;
+            --sidebar-width: 300px;
         }
 
         [data-theme="dark"] {
-            --lg-red: #e6004c;
-            --lg-dark-red: #ff3377;
-            --lg-gray-900: #f8f9fa;
-            --lg-gray-700: #d1d1d1;
-            --lg-gray-400: #a1a1a6;
-            --lg-gray-100: #1e1e20;
-            --lg-white: #0f0f11;
-            --lg-border: #444446;
-
-            --card-bg: rgba(30, 30, 32, 0.96);
+            --bg-color: #0f0f11;
+            --card-bg: rgba(30, 30, 32, 0.94);
             --text-color: #f8f9fa;
             --text-muted: #a1a1a6;
             --border-color: rgba(255, 255, 255, 0.08);
@@ -56,599 +36,212 @@
             --accent-bg: rgba(255, 255, 255, 0.03);
             --input-border: #444446;
             --shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
-            --overlay-bg: rgba(0,0,0,0.7);
-            
-            --color-tv: #4080FF;
-            --color-mesin-cuci: #23C343;
-            --color-kulkas: #F9C740;
-            --color-ac: #9254DE;
-            --color-lainnya: #F76161;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-        }
-
+        /* --- Kunci Total Layar Agar Tidak Geser Kiri Kanan --- */
         html, body {
-            width: 100%;
-            overflow-x: auto; /* ✅ BISA GESER KIRI KANAN */
-            position: relative;
-        }
-
-        body {
-            font-family: 'LG Display', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: var(--lg-gray-100);
-            color: var(--lg-gray-900);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-image: linear-gradient(rgba(244,245,247,0.6), rgba(244,245,247,0.6)), url('https://files.catbox.moe/qksxi0.svg');
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-            background-attachment: fixed;
-        }
-
-        [data-theme="dark"] body {
-            background-image: linear-gradient(rgba(15,15,17,0.75), rgba(15,15,17,0.75)), url('https://files.catbox.moe/qksxi0.svg');
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px 15px;
-        }
-
-        .main-header {
-            background-color: var(--lg-white);
-            border-bottom: 2px solid var(--lg-red);
-            padding: 20px 0;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            width: 100%;
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            height: 45px;
-            width: auto;
-        }
-
-        .logo-text h1 {
-            font-size: 1.4rem;
-            color: var(--lg-red);
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .logo-text p {
-            font-size: 0.85rem;
-            color: var(--lg-gray-700);
-            margin: 0;
-        }
-
-        .tagline {
-            text-align: right;
-            font-size: 0.9rem;
-            color: var(--lg-gray-700);
-            font-style: italic;
-            word-wrap: break-word;
-        }
-
-        .main-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-            flex: 1;
-            width: 100%;
-        }
-
-        @media (min-width: 768px) {
-            .main-layout {
-                grid-template-columns: 1fr 1.8fr;
-            }
-        }
-
-        .card {
-            background: var(--lg-white);
-            border-radius: 6px;
-            padding: 24px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            border-top: 4px solid var(--lg-red);
+            overflow-x: hidden;
             width: 100%;
             position: relative;
-            overflow-x: auto; /* ✅ SCROLL HORIZONTAL DI DALAM KARTU */
         }
 
-        .card h2 {
-            font-size: 1.25rem;
-            color: var(--lg-gray-900);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--lg-border);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            word-wrap: break-word;
-        }
-
-        .card h2::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 18px;
-            background-color: var(--lg-red);
-            flex-shrink: 0;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-            width: 100%;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--lg-gray-700);
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid var(--lg-border);
-            border-radius: 4px;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            background-color: var(--lg-white);
-            color: var(--lg-gray-900);
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--lg-red);
-            box-shadow: 0 0 0 3px rgba(165,0,52,0.1);
-        }
-
-        button {
-            width: 100%;
-            background-color: var(--lg-red);
-            color: var(--lg-white);
-            border: none;
-            padding: 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: background 0.3s ease;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: var(--lg-dark-red);
-        }
-
-        .info-kirim {
-            font-size: 0.8rem;
-            color: var(--lg-gray-400);
-            margin-top: 12px;
-            padding: 8px;
-            background-color: var(--lg-gray-100);
-            border-radius: 4px;
-            text-align: center;
-            line-height: 1.5;
-            word-wrap: break-word;
-        }
-
-        .table-container {
-            overflow-x: auto; /* ✅ UTAMA: BISA GESER KIRI KANAN */
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            border: 1px solid var(--lg-border);
-            width: 100%;
-        }
-
-        table {
-            width: 100%;
-            min-width: 700px; /* ✅ LEBAR MINIMAL AGAR BISA SCROLL */
-            border-collapse: collapse;
-            font-size: 0.8rem;
-        }
-
-        th {
-            background-color: var(--lg-gray-100);
-            color: var(--lg-gray-900);
-            font-weight: 700;
-            padding: 10px 6px;
-            text-align: left;
-            border-bottom: 2px solid var(--lg-red);
-            font-size: 0.78rem;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 8px 6px;
-            border-bottom: 1px solid var(--lg-border);
-            vertical-align: top;
-            word-wrap: break-word;
-            white-space: normal;
-            line-height: 1.3;
-            font-size: 0.78rem;
-        }
-
-        tr:hover {
-            background-color: #fef2f6;
-        }
-
-        [data-theme="dark"] tr:hover {
-            background-color: #2a2a2c;
-        }
-
-        .badge {
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 0.68rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            display: inline-block;
-        }
-        .badge-masuk { background-color: var(--status-new); color: #856404; }
-        .badge-proses { background-color: var(--status-process); color: #084298; }
-        .badge-selesai { background-color: var(--status-done); color: #0f5132; }
-
-        .btn-action {
-            padding: 4px 6px;
-            font-size: 0.7rem;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            width: 100%;
-            margin: 1px 0;
-            font-weight: 500;
-            text-transform: none;
-        }
-        .btn-hapus { background-color: #dc3545; color: white; }
-        .btn-wa { background-color: #25D366; color: white; }
-        .btn-email { background-color: #D44638; color: white; }
-
-        .link-lokasi {
-            color: #0066CC;
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-block;
-            font-size: 0.7rem !important;
-        }
-        .link-lokasi:hover { text-decoration: underline; }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0,0,0,0.75);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            padding: 15px;
-            backdrop-filter: blur(4px);
-            overflow-y: auto;
-        }
-
-        .agreement-box {
-            background-color: var(--lg-white);
-            border-radius: 8px;
-            width: 100%;
-            max-width: 620px;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border-top: 5px solid var(--lg-red);
-            animation: modalMuncul 0.4s ease-out;
-        }
-
-        @keyframes modalMuncul {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .agreement-header {
-            background-color: var(--lg-red);
-            color: white;
-            padding: 16px;
-            text-align: center;
-            border-radius: 6px 6px 0 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .agreement-header img {
-            height: 30px;
-            width: auto;
-            filter: brightness(0) invert(1);
-        }
-        .agreement-header h2 { font-size: 1.1rem; margin: 0; font-weight: 600; }
-
-        .agreement-body {
-            padding: 24px;
-            line-height: 1.7;
-            font-size: 0.95rem;
-            color: var(--lg-gray-700);
-        }
-        .agreement-body h3 {
-            color: var(--lg-red);
-            text-align: center;
-            margin: 0 0 15px 0;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .ketentuan {
-            background-color: #fff8f9;
-            border-left: 4px solid var(--lg-red);
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-        [data-theme="dark"] .ketentuan { background-color: #2b151c; }
-        .biaya { font-weight: 700; color: var(--lg-red); font-size: 1rem; }
-
-        .agreement-footer {
-            display: flex;
-            gap: 12px;
-            padding: 0 24px 24px 24px;
-            flex-wrap: wrap;
-        }
-        .btn-setuju { background-color: #198754; }
-        .btn-setuju:hover { background-color: #157347; }
-        .btn-tolak { background-color: #dc3545; }
-        .btn-tolak:hover { background-color: #bb2d3b; }
-
-        #mainApp { display: none; width: 100%; }
-
-        .main-footer {
-            margin-top: 30px;
-            padding: 15px 0;
-            background-color: var(--lg-white);
-            border-top: 1px solid var(--lg-border);
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--lg-gray-700);
-            font-weight: 500;
-            width: 100%;
-        }
-        .main-footer span { color: var(--lg-red); font-weight: 600; }
-
-        .floating-calc-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 100;
-            background-color: var(--lg-red);
-            color: #ffffff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 13px;
-            box-shadow: 0 6px 25px rgba(165,0,52,0.35);
-            cursor: pointer;
-            width: auto;
-            animation: gerakTombol 1.5s infinite ease-in-out;
-        }
-        @keyframes gerakTombol {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
-
+        /* --- Splash Screen --- */
         #splash-screen {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 99999;
+            z-index: 999999;
             opacity: 1;
             visibility: visible;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        [data-theme="dark"] #splash-screen { background-color: #0f0f11; }
+
+        [data-theme="dark"] #splash-screen {
+            background-color: #0f0f11;
+        }
+
         .splash-logo {
             width: 120px;
             height: auto;
             animation: pulse-logo 3s infinite ease-in-out;
         }
+
         @keyframes pulse-logo {
             0% { transform: scale(0.96); opacity: 0.85; }
             50% { transform: scale(1.04); opacity: 1; }
             100% { transform: scale(0.96); opacity: 0.85; }
         }
 
-        .overlay-calc {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--overlay-bg);
-            backdrop-filter: blur(5px);
-            z-index: 998;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            overflow-y: auto;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
         }
-        .overlay-calc.active { display: block; opacity: 1; }
 
-        .popup-main {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 92%;
-            max-width: 380px;
-            max-height: 90vh;
+        body {
+            background-color: var(--bg-color);
+            background-image: linear-gradient(rgba(244, 245, 247, 0.6), rgba(244, 245, 247, 0.6)), url('https://files.catbox.moe/qksxi0.svg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 12px;
+        }
+
+        [data-theme="dark"] body {
+            background-image: linear-gradient(rgba(15, 15, 17, 0.75), rgba(15, 15, 17, 0.75)), url('https://files.catbox.moe/qksxi0.svg');
+        }
+
+        /* --- Layout Utama --- */
+        .app-layout {
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+        }
+
+        .container {
             background-color: var(--card-bg);
-            border-radius: 16px;
+            backdrop-filter: blur(18px); 
+            -webkit-backdrop-filter: blur(18px);
+            padding: 24px;
+            border-radius: 24px;
             box-shadow: var(--shadow);
-            z-index: 999;
-            overflow: hidden;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0.2, 1);
+            width: 100%;
             border: 1px solid var(--border-color);
         }
-        .popup-main.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
+
+        /* --- Sidebar Panduan --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -340px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-left: 1px solid var(--border-color);
+            padding: 30px 24px;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
+            z-index: 500000;
+            overflow-y: auto;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .popup-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--accent-bg);
-            position: relative;
-            width: 100%;
+        .sidebar.active {
+            right: 0; 
         }
-        .popup-title h2 {
+
+        .sidebar-title {
             font-size: 16px;
             font-weight: 700;
             color: var(--primary-color);
-            letter-spacing: -0.3px;
-        }
-        .popup-title p { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-        .popup-actions { display: flex; gap: 8px; }
-
-        .btn-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: transparent;
-            color: var(--text-color);
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            margin: 0;
-            flex-shrink: 0;
-        }
-        .btn-icon:hover {
-            background-color: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .popup-body {
-            padding: 20px;
-            overflow-y: auto;
-            max-height: calc(90vh - 80px);
-            width: 100%;
+        .step-list {
+            list-style: none;
         }
 
-        .popup-guide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--card-bg);
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            overflow-y: auto;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
-        .popup-guide.active { transform: translateX(0); }
-
-        .guide-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background-color: var(--accent-bg);
-            position: sticky;
-            top: 0;
-            z-index: 2;
-            width: 100%;
-        }
-        .guide-title { font-size: 16px; font-weight: 700; color: var(--primary-color); }
-        .guide-body { padding: 20px; }
-        .step-list { list-style: none; }
         .step-item {
             margin-bottom: 20px;
-            font-size: 14px;
+            font-size: 13.5px;
             line-height: 1.6;
             color: var(--text-color);
-            display: flex;
-            gap: 10px;
-            word-wrap: break-word;
         }
+
         .step-num {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 24px;
+            display: inline-block;
+            width: 22px;
+            height: 22px;
             background-color: var(--primary-color);
             color: #ffffff;
             border-radius: 50%;
-            font-size: 12px;
+            text-align: center;
+            line-height: 22px;
+            font-size: 11px;
             font-weight: 700;
-            flex-shrink: 0;
+            margin-right: 8px;
+        }
+
+        /* --- Tombol Floating Panduan --- */
+        .sidebar-toggle-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 600000;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            box-shadow: 0 6px 25px rgba(165, 0, 52, 0.35);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-wrapper {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
             margin-top: 2px;
+            letter-spacing: 1px;
+        }
+
+        .header-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .status-container {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--text-muted);
-            margin-bottom: 15px;
-            flex-wrap: wrap;
         }
+
         .indicator-dot {
             width: 8px;
             height: 8px;
@@ -656,341 +249,263 @@
             border-radius: 50%;
             box-shadow: 0 0 8px #2ec4b6;
             animation: pulse-animation 2s infinite ease-in-out;
-            flex-shrink: 0;
         }
+
         @keyframes pulse-animation {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46,196,182,0.6); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(46,196,182,0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46,196,182,0); }
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.6); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(46, 196, 182, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 196, 182, 0); }
+        }
+
+        .theme-toggle-btn {
+            background-color: var(--accent-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--primary-color);
+            background-color: var(--card-bg);
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-color);
+            letter-spacing: -0.2px;
         }
 
         .custom-select, .custom-input {
             width: 100%;
-            padding: 12px 14px;
-            border: 2px solid var(--input-border);
-            border-radius: 12px;
-            background-color: var(--accent-bg);
+            padding: 13px 16px;
+            border: 1.5px solid var(--input-border);
+            border-radius: 14px;
+            background-color: var(--card-bg);
             color: var(--text-color);
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
             outline: none;
             cursor: pointer;
             appearance: none;
             -webkit-appearance: none;
-            -moz-appearance: none;
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a50034' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
             background-repeat: no-repeat;
-            background-position: right 12px center;
+            background-position: right 14px center;
             background-size: 16px;
-            transition: all 0.3s ease;
         }
+
         [data-theme="dark"] .custom-select {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23e6004c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
         }
-        .custom-input { cursor: text; background-image: none; padding-right: 14px; }
+
+        .custom-input {
+            cursor: text;
+            background-image: none;
+            padding-right: 16px;
+        }
+
         .custom-select:focus, .custom-input:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(165,0,52,0.12);
-            transform: translateY(-1px);
+            box-shadow: 0 0 0 4px rgba(165, 0, 52, 0.1);
         }
-        
-        .custom-select optgroup { 
-            font-weight: 700; 
-            padding: 10px 8px; 
-            margin: 4px 0; 
-            border-radius: 8px;
+
+        .custom-select optgroup {
+            font-weight: 700;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            padding: 10px;
         }
-        .custom-select optgroup[label*="TV"] { 
-            background-color: rgba(22,93,255,0.08); 
-            color: var(--color-tv);
-            border-left: 3px solid var(--color-tv);
-        }
-        .custom-select optgroup[label*="Mesin Cuci"] { 
-            background-color: rgba(0,180,42,0.08); 
-            color: var(--color-mesin-cuci);
-            border-left: 3px solid var(--color-mesin-cuci);
-        }
-        .custom-select optgroup[label*="Kulkas"] { 
-            background-color: rgba(247,186,30,0.08); 
-            color: var(--color-kulkas);
-            border-left: 3px solid var(--color-kulkas);
-        }
-        .custom-select optgroup[label*="AC"] { 
-            background-color: rgba(114,46,209,0.08); 
-            color: var(--color-ac);
-            border-left: 3px solid var(--color-ac);
-        }
-        .custom-select optgroup[label*="Audio"] { 
-            background-color: rgba(245,63,63,0.08); 
-            color: var(--color-lainnya);
-            border-left: 3px solid var(--color-lainnya);
-        }
-        
-        .custom-select option { 
-            font-weight: 500; 
-            color: var(--text-color); 
-            background-color: var(--card-bg); 
-            padding: 10px 12px; 
-            margin: 2px 0;
-            border-radius: 6px;
-            transition: background 0.2s;
-        }
-        .custom-select option:hover {
-            background-color: var(--accent-bg);
+
+        .custom-select option {
+            font-weight: 500;
+            color: var(--text-color);
+            background-color: var(--card-bg);
+            padding: 12px;
         }
 
         .radio-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 8px;
-            width: 100%;
+            gap: 12px;
+            margin-top: 4px;
         }
+
         @media (min-width: 480px) {
-            .radio-group { flex-direction: row; gap: 15px; }
+            .radio-group {
+                flex-direction: row;
+                gap: 20px;
+            }
         }
+
         .radio-label, .checkbox-label {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
             font-weight: 500;
-            font-size: 13px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1.5px solid transparent;
-            transition: all 0.2s;
-            width: 100%;
-            word-wrap: break-word;
+            font-size: 14px;
         }
-        .radio-label:hover {
-            background-color: var(--accent-bg);
-            border-color: var(--input-border);
+
+        .radio-label input, .checkbox-label input {
+            accent-color: var(--primary-color);
+            width: 17px;
+            height: 17px;
         }
-        .radio-label input, .checkbox-label input { accent-color: var(--primary-color); width: 16px; height: 16px; flex-shrink: 0; }
 
         .sub-panel {
             background-color: var(--accent-bg);
-            padding: 16px;
-            border-radius: 12px;
-            border-left: 4px solid var(--color-ac);
-            margin-top: 12px;
-            display: none;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
-            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            border-left: 4px solid var(--primary-color);
+            margin-top: 10px;
         }
-        .part-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+
+        .part-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
         .btn-add-part {
             background-color: transparent;
             color: var(--primary-color);
             border: 1.5px dashed var(--primary-color);
-            padding: 10px;
-            border-radius: 10px;
+            padding: 11px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 13px;
             width: 100%;
             margin-top: 4px;
-            transition: all 0.2s;
         }
-        .btn-add-part:hover { 
-            background-color: var(--primary-color); 
-            color: #ffffff; 
-            border-style: solid;
+
+        .btn-add-part:hover {
+            background-color: var(--primary-color);
+            color: #ffffff;
         }
 
         .result-panel {
-            margin-top: 24px;
+            margin-top: 30px;
             border-top: 1px dashed var(--border-color);
-            padding-top: 20px;
-            background-color: var(--accent-bg);
-            border-radius: 12px;
-            padding: 16px;
-            width: 100%;
+            padding-top: 22px;
         }
+
         .panel-header-inline {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 8px;
+            margin-bottom: 20px;
         }
-        .panel-header-inline h3 { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; color: var(--primary-color); }
+
+        .panel-header-inline h3 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
 
         .override-select {
-            padding: 6px 28px 6px 12px;
-            font-size: 12px;
+            padding: 8px 32px 8px 14px;
+            font-size: 13px;
             font-weight: 700;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1.5px solid var(--border-color);
-            background-color: var(--accent-bg);
+            background-color: var(--card-bg);
             color: var(--text-color);
             cursor: pointer;
             outline: none;
             appearance: none;
             -webkit-appearance: none;
-            -moz-appearance: none;
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235a626a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
             background-repeat: no-repeat;
-            background-position: right 8px center;
+            background-position: right 10px center;
             background-size: 12px;
         }
 
         .result-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 13.5px;
+            margin-bottom: 12px;
+            font-size: 14.5px;
             color: var(--text-muted);
-            padding: 4px 0;
-            flex-wrap: wrap;
-            gap: 4px;
         }
-        .result-row span:last-child { color: var(--text-color); font-weight: 600; text-align: right; }
+
+        .result-row span:last-child {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
         .result-row.total-row {
-            font-size: 18px;
+            font-size: 21px;
             font-weight: 800;
             color: var(--text-color);
             border-top: 1px solid var(--border-color);
-            padding-top: 12px;
-            margin-top: 12px;
-            background-color: rgba(165,0,52,0.05);
-            padding: 10px 12px;
-            border-radius: 8px;
+            padding-top: 16px;
+            margin-top: 16px;
         }
-        .result-row.total-row span:last-child { color: var(--primary-color); font-weight: 800; }
+
+        .result-row.total-row span:last-child {
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        .btn-share {
+            background-color: var(--share-color);
+            color: #ffffff;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 18px;
+            box-shadow: 0 6px 20px rgba(0, 118, 214, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-share:hover {
+            background-color: var(--share-hover);
+            transform: translateY(-1px);
+        }
+
+        .footer-layout-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 25px;
+        }
 
         .footer-text {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-muted);
             letter-spacing: 0.3px;
             text-align: center;
             opacity: 0.7;
-            background-color: var(--accent-bg);
-            padding: 6px 12px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            margin-top: 12px;
-            width: 100%;
-        }
-        .info-text {
-            font-size: 11px;
-            color: #e6004c;
-            font-weight: 600;
-            text-align: center;
-            margin: 4px 0;
-        }
-
-        /* ✅ ANIMASI JARI & TEKS PETUNJUK BERGERAK TERUS */
-        .jari-arah {
-            position: absolute;
-            font-size: 36px;
-            z-index: 10;
-            animation: jalanJari 1.5s infinite alternate ease-in-out; /* ✅ BERGERAK TERUS */
-            pointer-events: none;
-        }
-        @keyframes jalanJari {
-            0% { transform: translate(-10px, 0) rotate(-12deg); opacity: 0.6; }
-            100% { transform: translate(5px, 0) rotate(0deg); opacity: 1; }
-        }
-
-        .petunjuk-teks {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--lg-red);
-            background-color: rgba(255, 255, 255, 0.85);
-            padding: 6px 12px;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            padding: 6px 14px;
             border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            display: inline-block;
-            margin: 8px 0;
-            border: 1px solid var(--lg-red);
-            animation: kedipTeks 2s infinite ease-in-out; /* ✅ BERGERAK / KEDIP */
-        }
-        @keyframes kedipTeks {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            border: 1px solid var(--border-color);
         }
 
-        /* ✅ TOMBOL PEMILIH KIRIM & POPUP */
-        .btn-pilih-kirim {
-            background: linear-gradient(45deg, #25D366, #198754, #D44638, #b02a37);
-            background-size: 400% 400%;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
-            animation: gradienJalan 3s linear infinite, naikTurun 1.2s infinite alternate ease-in-out;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            width: auto;
-            margin: 8px auto;
-            display: block;
+        [data-theme="dark"] .footer-text {
+            background-color: rgba(0, 0, 0, 0.3);
         }
-        @keyframes gradienJalan {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        @keyframes naikTurun {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-4px) scale(1.03); }
-        }
-
-        .popup-pilihan {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            z-index: 10000;
-            padding: 20px;
-            width: 85%;
-            max-width: 300px;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            border: 2px solid var(--lg-red);
-        }
-        .popup-pilihan.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-        }
-        .popup-pilihan h4 {
-            text-align: center;
-            color: var(--lg-red);
-            margin-bottom: 15px;
-        }
-        .btn-pilihan {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn-wa-pilih { background: #25D366; color: white; }
-        .btn-email-pilih { background: #D44638; color: white; }
-        .btn-tutup-pilih { background: var(--lg-gray-400); color: white; }
-        .overlay-pilihan {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 9999;
-            display: none;
-        }
-        .overlay-pilihan.active { display: block; }
-
     </style>
 </head>
 <body>
@@ -999,676 +514,519 @@
         <img src="https://files.catbox.moe/qksxi0.svg" alt="LG Logo" class="splash-logo">
     </div>
 
-    <div id="agreementModal" class="overlay">
-        <div class="agreement-box">
-            <div class="agreement-header">
-                <img src="https://files.catbox.moe/f6g7rh.svg" alt="LG Icon">
-                <h2>Persetujuan Ketentuan Layanan Service</h2>
-            </div>
-            <div class="agreement-body">
-                <h3>⚠️ PERHATIAN: Ketentuan Biaya Pengecekan atau Pembatalan ( Abaikan jika produk Masi dalam masa garansi )</h3>
-                <p>Dengan pernyataan ini saya telah menyetujui ketentuan LG untuk perbaikan produk saya.<strong>LG Electronics Service Center</strong>, Pelanggan dianggap telah membaca, mengerti, dan <strong>menyetujui</strong> seluruh ketentuan layanan kami berikut ini:</p>
-                <div class="ketentuan">
-                    <p>Setiap laporan perbaikan, baik itu sistem <em>Carry In</em> (bawa ke tempat kami) maupun <em>In-Home</em> (teknisi datang ke rumah), <strong>akan dikenakan biaya pengecekan / biaya pembatalan</strong> bilamana terjadi pembatalan perbaikan setelah teknisi berkunjung dan melakukan pengecekan produk.</p>
-                    <p>Adapun rincian biaya pengecekan / pembatalan adalah sebagai berikut:</p>
-                    <ul style="margin: 10px 0 10px 20px;">
-                        <li>Produk Microwave, Home theater , dan Soundbar: <span class="biaya">Rp 88.800</span></li>
-                        <li>Produk TV, Mesin Cuci, Kulkas, AC, Monotor, dan produk besar lainnya: <span class="biaya">Rp 166.500 - Rp 300.000</span> (tergantung tipe, ukuran, dan spesifikasi produk)</li>
-                    </ul>
-                </div>
-                <p>Biaya ini dibebankan sebagai pengganti biaya operasional, waktu kerja teknisi, dan transportasi yang telah dikeluarkan saat proses pengecekan berlangsung, terlepas dari apakah perbaikan jadi dilakukan atau dibatalkan oleh pelanggan setelah mengetahui kerusakan maupun estimasi biaya perbaikan , Dan perlu di pahami , *biaya pengecekan tidak akan menjadi tambahan jika customer setuju dengan biaya yang di sampaikan tehknisi sesuai dengan kerusakan produk anda</p>
-                <p style="font-weight: 600; margin-top:15px;">Apakah Anda menyetujui ketentuan di atas dan ingin melanjutkan ke formulir laporan?</p>
-            </div>
-            <div class="agreement-footer">
-                <button id="btnTolak" class="btn-tolak">Tidak Setuju / Keluar</button>
-                <button id="btnSetuju" class="btn-setuju">👉 Klik Disini & Lanjutkan</button>
-            </div>
-        </div>
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">📋 Buka Panduan</button>
+
+    <div class="sidebar" id="guideSidebar">
+        <h4 class="sidebar-title">Panduan Aplikasi</h4>
+        <ul class="step-list">
+            <li class="step-item"><span class="step-num">1</span><strong>Metode Layanan:</strong> Tentukan penanganan dibawa ke service center (Carry-In) atau kunjungan teknisi (In-Home).</li>
+            <li class="step-item"><span class="step-num">2</span><strong>Pilih Perangkat:</strong> Pilih tipe produk elektronik yang bermasalah pada menu dropdown utama.</li>
+            <li class="step-item"><span class="step-num">3</span><strong>Freon Otomatis:</strong> Opsi freon akan muncul khusus jika tipe produk kulkas atau AC dipilih.</li>
+            <li class="step-item"><span class="step-num">4</span><strong>Suku Cadang:</strong> Centang opsi sparepart jika ada penggantian komponen fisik untuk menambahkan daftar dan total biaya.</li>
+            <li class="step-item"><span class="step-num">5</span><strong>Bagikan Hasil:</strong> Klik tombol ekspor di bawah untuk menyalin/membagikan estimasi biaya ke WhatsApp.</li>
+        </ul>
     </div>
 
-    <!-- ✅ POPUP PILIHAN KIRIM -->
-    <div class="overlay-pilihan" id="overlayPilih"></div>
-    <div class="popup-pilihan" id="popupPilih">
-        <h4>📤 Pilih Cara Kirim Laporan</h4>
-        <button class="btn-pilihan btn-wa-pilih" id="kirimViaWA">📱 KIRIM VIA WHATSAPP</button>
-        <button class="btn-pilihan btn-email-pilih" id="kirimViaEmail">📧 KIRIM VIA EMAIL</button>
-        <button class="btn-pilihan btn-tutup-pilih" id="tutupPilih">❌ TUTUP</button>
-    </div>
-
-    <div id="mainApp">
-        <header class="main-header">
-            <div class="container header-content">
-                <div class="logo-container">
-                    <img src="https://files.catbox.moe/f6g7rh.svg" alt="LG Logo" class="logo-icon">
-                    <div class="logo-text">
-                        <h1>LG Electronics</h1>
-                        <p>Service Center Management System</p>
-                    </div>
-                </div>
-                <div class="tagline">Memberikan Kepuasan dan Solusi Terbaik</div>
-            </div>
-        </header>
-
+    <div class="app-layout">
         <div class="container">
-            <div class="main-layout">
-                <div class="card" id="formCard">
-                    <!-- ✅ ANIMASI JARI BERGERAK TERUS -->
-                    <div class="jari-arah" style="top: 10px; left: -15px;">👉</div>
-                    
-                    <h2>Formulir Laporan Perbaikan</h2>
-                    <p class="petunjuk-teks">👇 Silakan isi semua data di bawah ini dengan lengkap 👇</p>
-
-                    <form id="formService">
-                        <div class="form-group">
-                            <label for="namaPelanggan">Nama Lengkap Pelanggan *</label>
-                            <input type="text" id="namaPelanggan" required placeholder="Contoh: Budi Santoso">
-                        </div>
-                        <div class="form-group">
-                            <label for="kontak">Nomor Telepon / WhatsApp *</label>
-                            <input type="tel" id="kontak" required placeholder="Contoh: 0812-3456-7890">
-                        </div>
-                        <div class="form-group">
-                            <label for="alamat">Alamat Lengkap *</label>
-                            <textarea id="alamat" rows="3" required placeholder="Masukkan alamat lengkap: Nama Jalan, Nomor Rumah, RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="sharelok">Link Sharelok / (⛔Tidak wajib di isi)</label>
-                            <input type="url" id="sharelok" placeholder="Contoh: https://maps.google.com/maps?q=-6.12345,106.12345">
-                        </div>
-                        <div class="form-group">
-                            <label for="namaBarang">Tipe / model Produk *</label>
-                            <input type="text" id="namaBarang" required placeholder="Contoh: TV LED LG 43UP7500 / Kulkas GN-H722HLHU">
-                        </div>
-                        <div class="form-group">
-                            <label for="keluhan">Deskripsi Kerusakan / Keluhan *</label>
-                            <textarea id="keluhan" rows="4" required placeholder="Jelaskan detail masalah yang terjadi pada produk anda"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="tipeLayanan">Jenis Layanan *</label>
-                            <select id="tipeLayanan" required>
-                                <option value=</option>
-                                <option value="In Home">In Home (Kunjungan ke Rumah)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Status Laporan *</label>
-                            <select id="status">
-                                <option value="GARANSI">PEMAKAIAN BELUM 1 TAHUN</option>
-                                <option value="OUT GARANSI">PEMAKAIAN SUDAH LEBIH 1 TAHUN</option>
-                                <option value="GARANSI DINAMO / KOMPRESOR">GARANSI KOMPRESOR 5 / 10 TAHUN</option>
-                            </select>
-                        </div>
-                        <div class="info-kirim">
-                            <strong>Laporan akan dikirim ke:</strong><br>
-                            WhatsApp: 6281241256747<br>
-                            Email: alqadri.syarif@lge.com
-                        </div>
-
-                        <!-- ✅ TOMBOL PENGGANTI TEKS, BERGERAK DAN MUNCULKAN PILIHAN -->
-                        <button type="button" class="btn-pilih-kirim" id="tombolBukaPilih">
-                            📤 KLIK DISINI SETELAH SAVE LAPORAN 📤
-                        </button>
-
-                        <button type="submit">💾 SIMPAN DATA LAPORAN</button>
-                    </form>
-
-                    <!-- ✅ ANIMASI PETUNJUK KE TOMBOL SIMPAN -->
-                    <div class="jari-arah" style="bottom: 20px; right: 10px; font-size: 40px;">👆</div>
-                    <p class="petunjuk-teks" style="text-align: center; margin-top:15px;">
-                        Setelah isi form, klik tombol <strong>SIMPAN DATA</strong> di atas
-                    </p>
+            <div class="header-wrapper">
+                <div>
+                    <div class="brand-title">LG Service Electronics</div>
+                    <div class="brand-subtitle">ESTIMASI BIAYA PERBAIKAN</div>
                 </div>
-
-                <div class="card">
-                    <h2>Daftar Antrean & Riwayat Laporan</h2>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>Data Pelanggan & Alamat</th>
-                                    <th>Produk</th>
-                                    <th>Keluhan</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="listLaporan">
-                                <!-- Data akan dimuat dari JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TOMBOL APUNG KALKULATOR -->
-        <button class="floating-calc-btn" id="openMainBtn">
-            📠 SIMULASI BIAYA PERBAIKAN
-        </button>
-
-        <!-- POPUP KALKULATOR -->
-        <div class="overlay-calc" id="overlayCalc">
-            <div class="popup-main" id="popupMain">
-                <div class="popup-header">
-                    <div class="popup-title">
-                        <h2>📠 PERHITUNGAN ESTIMASI BIAYA SERVICE</h2>
-                        <p>Estimasi perhitungan biaya</p>
-                    </div>
-                    <div class="popup-actions">
-                        <button class="btn-icon" id="themeBtn">🪟</button>
-                        <button class="btn-icon" id="openGuideBtn">📖</button>
-                        <button class="btn-icon" id="closeMainBtn">×</button>
-                    </div>
-                </div>
-
-                <div class="popup-body">
+                <div class="header-meta">
                     <div class="status-container">
-                        <span class="indicator-dot"></span>
-                        <span>Semua perhitungan sifatnya estimasi atau perkiraan</span>
+                        <div class="indicator-dot"></div>
+                        <span>System connected to server (Online)</span>
                     </div>
-
-                    <div class="form-group">
-                        <label>Tipe Layanan</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="service_type" value="in_shop" checked>
-                                <span>🏪 Carry - in (bawa ke Service center)</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="service_type" value="in_home">
-                                <span>🏠 In-Home - Kunjungan ke Rumah</span>
-                            </label>
-                        </div>
-                        
-                        <div class="sub-panel" id="ecOption">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="eveningCare">
-                                <span>🌙 Evening Care / Layanan Sore-Malam <strong>(+ Rp 150.000)</strong></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Kategori & jenis Produk</label>
-                        <select id="device" class="custom-select">
-                            <option value="" disabled selected>--- Pilih Jenis Produk ---</option>
-                                                        <optgroup label="📺 1. KATEGORI TV" data-type="tv">
-                                <!-- Format: [Minor|Mayor|Special|Pengecekan] -->
-                                <option value="99000|165000|255000|90000">▸ TV 14 - 21 Inch</option>
-                                <option value="165000|255555|350000|130000">▸ TV 24 - 32 Inch</option>
-                                <option value="240000|310000|500000|150000">▸ TV 40 - 49 Inch</option>
-                                <option value="240000|310000|500000|150000">▸ TV 50 - 55 Inch</option>
-                                <option value="260000|340000|500000|150000">▸ TV 60 - 75 Inch</option>
-                                <option value="500000|600000|700000|200000">▸ TV 85 - 100 Inch</option>
-                            </optgroup>
-
-                            <optgroup label="🧊 2. KATEGORI KULKAS" data-type="kulkas">
-                                <!-- Format: [Minor|Mayor|Special|Pengecekan] -->
-                                <option value="115000|210000|290000|110000">▸ Kulkas 1 Pintu / 2 Pintu</option>
-                                <option value="155000|265000|370000|145000">▸ Kulkas Side By Side / Multi Door</option>
-                            </optgroup>
-
-                            <optgroup label="❄️ 3. KATEGORI AC" data-type="ac">
-                                <!-- Format: [Minor|Mayor|Special|Pengecekan] -->
-                                <option value="110000|300000|420000|110000">▸ AC Split / Cassette / Standing</option>
-                            </optgroup>
-
-                            <optgroup label="🧺 4. KATEGORI MESIN CUCI" data-type="mesin_cuci">
-                                <!-- Format: [Minor|Mayor|Special|Pengecekan] -->
-                                <option value="130000|210000|300000|110000">▸ Mesin Cuci 1 Tabung / Top Load</option>
-                                <option value="165000|255000|400000|130000">▸ Mesin Cuci 2 Tabung</option>
-                                <option value="0|0|0|0">▸ Front Load / Dryer / Washer Dryer <em style="color:red">(Tidak Tersedia)</em></option>
-                            </optgroup>
-
-                            <optgroup label="🔊 5. KATEGORI AUDIO & KECIL" data-type="lainnya">
-                                <!-- Format: [Minor|Mayor|Special|Pengecekan] -->
-                                <option value="80000|135000|220000|80000">▸ Microwave </option>
-                                <option value="80000|135000|220000|80000">▸ Audio / Soundbar / Home Theater</option>
-                                <option value="0|0|0|0">▸ Monitor / Proyektor <em style="color:red">(Tidak Tersedia)</em></option>
-                            </optgroup>
-
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>🔧 Level Kerusakan <span style="font-size: 10px; color: #e6004c;">(SISTEM OTOMATIS)</span></label>
-                        <label class="checkbox-label" style="justify-content: space-between; padding: 0; margin-bottom:8px;">
-                            <span>📌 <em>Otomatis menyesuaikan jika ada pergantian sparepart</em></span>
-                            <span style="font-weight:700; color:var(--primary-color); font-size: 11px;">OTOMATIS</span>
-                        </label>
-                        <select id="damageLevel" class="custom-select">
-                            <option value="" disabled selected>--- Pilih / Otomatis ---</option>
-                            <option value="minor">🔅 Minor </option>
-                            <option value="mayor">🔆 Mayor </option>
-                            <option value="special">⚡ Special </option>
-                            <option value="cek">📝 Pengecekan / Pembatalan</option>
-                        </select>
-                               <p id="infoCek" class="info-text" style="display: none;">ℹ️ Biaya pengecekan sesuai standar produk yang dipilih.</p>
-                    </div>
-
-
-                    <div class="form-group" id="freonPanel" style="display: none;">
-                        <label>❄️ Biaya Isi/Ulang Freon (Rp)</label>
-                        <input type="number" id="freonCost" class="custom-input" placeholder="Masukkan nominal jika ada (contoh: 150000)" min="0" step="1000">
-                    </div>
-
-                    <div class="form-group">
-                        <label>🔩 Harga spare part jika ada pergantian (Rp)</label>
-                        <input type="number" id="extraCost" class="custom-input" placeholder="Masukkan nominal jika ada (contoh: 500000)" min="0" step="1000">
-                        <small style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">*Masukan harga spare part jika perbaikan menggunakan sparepart</small>
-                    </div>
-
-                    <div class="result-panel">
-                        <div class="panel-header-inline">
-                            <h3>📋 RINCIAN BIAYA</h3>
-                        </div>
-                        
-                        <div class="result-row">
-                            <span>Biaya Jasa Servis</span>
-                            <span id="biayaJasa">Rp 0</span>
-                        </div>
-                        <div class="result-row" id="rowKunjungan" style="display:none;">
-                            <span>Biaya Kunjungan - In Home</span>
-                            <span>Rp 45.000</span>
-                        </div>
-                        <div class="result-row" id="rowEC" style="display:none;">
-                            <span>Layanan EC - Evening Care</span>
-                            <span>Rp 150.000</span>
-                        </div>
-                        <div class="result-row" id="rowSparepart" style="display:none;">
-                            <span>Biaya Sparepart</span>
-                            <span id="valSparepart">Rp 0</span>
-                        </div>
-                        <div class="result-row" id="rowFreon" style="display:none;">
-                            <span>Biaya Freon</span>
-                            <span id="valFreon">Rp 0</span>
-                        </div>
-                        <div class="result-row">
-                            <span>Sub Total Sebelum Pajak</span>
-                            <span id="subTotal">Rp 0</span>
-                        </div>
-                        <div class="result-row">
-                            <span>PPN 11%</span>
-                            <span id="ppnVal">Rp 0</span>
-                        </div>
-                        <div class="result-row total-row">
-                            <span>💳 TOTAL AKHIR DIBAYAR</span>
-                            <span id="totalPrice">Rp 0</span>
-                        </div>
-                        
-                        <div class="footer-text">
-                            *Simulasi biaya perbaikan
-                        </div>
-                    </div>
-                </div>
-
-                <div class="popup-guide" id="popupGuide">
-                    <div class="guide-header">
-                        <button class="btn-icon" id="closeGuideBtn">&lt;</button>
-                        <div class="guide-title">📘 Panduan Penggunaan</div>
-                    </div>
-                    <div class="guide-body">
-                        <ul class="step-list">
-                            <li class="step-item">
-                                <span class="step-num">1</span>
-                                <div><strong>Pilih Tipe Layanan</strong>: <em>Carry-In</em> (bawa ke tempat) atau <em>In-Home</em> (Kunjungan kerumah). Layanan In-home service tersedia opsi <strong>EC - Evening Care dengan biaya tambahan (Rp 150.000)</strong>.</div>
-                            </li>
-                            <li class="step-item">
-                                <span class="step-num">2</span>
-                                <div><strong>Pilih Jenis Produk</strong> sesuai kategori yang akan di service <strong>Tambahan biaya Freon</strong> otomatis muncul khusus produk AC & Kulkas , akan di isi jika pengerjaan menggunakan flashing / freon</div>
-                            </li>
-                            <li class="step-item">
-                                <span class="step-num">3</span>
-                                <div><strong>Level perbaikan otomatis jika perbaikan mengunakan pergantian spare part </strong>: , anda dapat memilih level <strong>"Pengecekan / Pembatalan"</strong> jika ingin mengetahui biaya yang akan di kenakan jika terjadi pembatalan setelah teknisi melakukan pemeriksaan <strong>📢</strong>: untuk layanan  In-Home, otomatis menambahkan biaya kunjungan <strong>📌 SISTEM OTOMATIS</strong> akan mengubah ke <strong> level Mayor / Special</strong> jika perbaikan menggunakan sparepart ❗*biaya pengecekan tidak akan di tambahkan jika perbaikan di lanjutkan , dan setuju dengan biaya yang di sampaikan teknisi sesuai dengan kerusakan produk.</div>
-                            </li>
-                            <li class="step-item">
-                                <span class="step-num">4</span>
-                                <div><strong>Masukkan biaya tambahan</strong> jika ada penggantian sparepart atau isi freon. Semua hitungan berjalan otomatis, termasuk perhitungan <strong>PPN 11% ❗Biaya pengecekan atau pembatalan dikenakan hanya kalau perbaikan di batalkan setelah teknisi berkunjung</strong>.</div>
-                            </li>
-                            <li class="step-item">
-                                <span class="step-num">💡</span>
-                                <div>Gunakan tombol <strong>🌓</strong> di pojok kanan atas untuk mengubah tampilan mode terang / gelap.</div>
-                            </li>
-                        </ul>
-                    </div>
+                    <button class="theme-toggle-btn" id="themeBtn">Dark / Light</button>
                 </div>
             </div>
-        </div>
 
-        <footer class="main-footer">
-            <p>Dibuat dan Dikembangkan oleh <span>Tim Teknis LG Electronics</span> © 2026</p>
-        </footer>
+            <div class="form-group">
+                <label>Tipe Layanan</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="service_type" value="in_shop" checked onchange="calculatePrice()"> Carry-In (Bawa ke Service center)
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="service_type" value="in_home" onchange="calculatePrice()"> In-Home (Kunjungan ke Rumah)
+                    </label>
+                </div>
+            </div>
+
+            <div id="inHomePanel" class="form-group sub-panel" style="display: none;">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="eveningCare" onchange="calculatePrice()"> EC (Evening Care)
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Jenis Produk & Kategori Pekerjaan</label>
+                <select id="device" class="custom-select" onchange="onDeviceChange()">
+                    <option value="" disabled selected>--- Pilih jenis Produk ---</option>
+                    <optgroup label="1. TV 19 - 32 inch">
+                        <option value="tv1" data-minor="120000" data-mayor="210000" data-special="300000">Repaire</option>
+                        <option value="tv1_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                    <optgroup label="2. TV 32 inch">
+                        <option value="tv2" data-minor="165000" data-mayor="255000" data-special="350000">Repaire</option>
+                        <option value="tv2_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                    <optgroup label="3. TV 43 - 75 inch">
+                        <option value="tv3" data-minor="205000" data-mayor="340000" data-special="500000">Repaire</option>
+                        <option value="tv3_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                    <optgroup label="4. TV 80 - 98 inch">
+                        <option value="tv4" data-minor="210000" data-mayor="400000" data-special="550000">Repaire</option>
+                        <option value="tv4_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                    <optgroup label="5. TV 100 inch">
+                        <option value="tv5" data-minor="500000" data-mayor="600000" data-special="700000">Repaire</option>
+                        <option value="tv5_cancel" data-minor="200000" data-mayor="200000" data-special="200000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                    <optgroup label="6. Mesin Cuci Top Loading">
+                        <option value="wm_top" data-minor="120000" data-mayor="130000" data-special="200000">Repaire</option>
+                        <option value="wm_top_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                    <optgroup label="7. Mesin Cuci Front Loading">
+                        <option value="wm_front" data-minor="150000" data-mayor="185000" data-special="260000">Repaire</option>
+                        <option value="wm_front_cancel" data-minor="130000" data-mayor="130000" data-special="130000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                    <optgroup label="8. Kulkas 1 Pintu & 2 Pintu">
+                        <option value="ref_small" data-type="refrigeration" data-minor="115000" data-mayor="210000" data-special="290000">Repaire</option>
+                        <option value="ref_small_cancel" data-minor="110000" data-mayor="110000" data-special="110000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                    <optgroup label="9. Kulkas Side By Side">
+                        <option value="ref_sbs" data-type="refrigeration" data-minor="155000" data-mayor="265000" data-special="370000">Repaire</option>
+                        <option value="ref_sbs_cancel" data-minor="145000" data-mayor="145000" data-special="145000" data-hide-part="yes" data-is-cancel="yes">Pengecekan / pembatalan</option>
+                    </optgroup>
+                    <optgroup label="10. AC (Semua PK penggunaan rumah tangga)">
+                        <option value="ac" data-type="refrigeration" data-minor="110000" data-mayor="300000" data-special="420000">Repaire</option>
+                        <option value="ac_cancel" data-minor="110000" data-mayor="110000" data-special="110000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                    <optgroup label="11. Audio, Microwave, HP">
+                        <option value="audio_etc" data-minor="160000" data-mayor="160000" data-special="200000">Repaire</option>
+                        <option value="audio_etc_cancel" data-minor="80000" data-mayor="80000" data-special="80000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div id="freonPanel" class="form-group sub-panel" style="display: none;">
+                <label>Penggunaan / Isi Ulang Freon?</label>
+                <div class="radio-group" style="margin-bottom: 12px;">
+                    <label class="radio-label">
+                        <input type="radio" name="freon_usage" value="tidak" checked onchange="onFreonToggleChange()"> Tidak
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="freon_usage" value="ya" onchange="onFreonToggleChange()"> Ya (Gunakan Freon)
+                    </label>
+                </div>
+                <div id="freonInputContainer" style="display: none;">
+                    <label style="font-size: 13px; color: var(--text-muted)">Masukkan Biaya Material Freon (Rp)</label>
+                    <input type="number" id="freonPriceInput" class="custom-input" placeholder="Contoh: 250000" min="0" oninput="calculatePrice()">
+                </div>
+            </div>
+
+            <div class="form-group" id="sparepartToggleGroup">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="sparepart" onchange="onSparepartToggleChange()"> Perbaikan dengan pergantian spare part
+                </label>
+            </div>
+
+            <div id="sparepartSection" class="form-group sub-panel" style="display: none;">
+                <label>Daftar Komponen Suku Cadang / Spare Part</label>
+                <div id="partRowsContainer">
+                    <div class="part-row">
+                        <input type="text" class="custom-input part-name" placeholder="Nama Komponen">
+                        <input type="number" class="custom-input part-price" placeholder="Harga Unit (Rp)" min="0">
+                    </div>
+                </div>
+                <button type="button" class="btn-add-part" onclick="addPartRow()">+ Tambah Suku Cadang</button>
+            </div>
+
+            <div class="result-panel">
+                <div class="panel-header-inline">
+                    <h3>Rincian Biaya</h3>
+                    <div>
+                        <select id="manualLevelSelect" class="override-select" onchange="onManualLevelChange()">
+                            <option value="auto">Otomatis (Sistem)</option>
+                            <option value="Minor">Minor</option>
+                            <option value="Mayor">Mayor</option>
+                            <option value="Special">Special</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="result-row">
+                    <span id="labelBasePrice">Ongkos Kerja Sesuai Kategori:</span>
+                    <span id="res-base">Rp 0</span>
+                </div>
+                <div class="result-row" id="rowVisit" style="display: none;">
+                    <span>Biaya Kunjungan:</span>
+                    <span id="labelVisitPrice">Rp 45.000</span>
+                </div>
+                <div class="result-row" id="rowEvening" style="display: none;">
+                    <span>EC (Evening Care):</span>
+                    <span id="labelEveningPrice">Rp 150.000</span>
+                </div>
+                <div class="result-row" id="rowFreonTotal" style="display: none;">
+                    <span>Biaya Material Pengisian Freon:</span>
+                    <span id="res-freon">Rp 0</span>
+                </div>
+                <div class="result-row" id="rowPartsTotal" style="display: none;">
+                    <span>Total biaya Suku Cadang:</span>
+                    <span id="res-parts">Rp 0</span>
+                </div>
+                <div class="result-row">
+                    <span>PPN (11%):</span>
+                    <span id="res-ppn">Rp 0</span>
+                </div>
+                <div class="result-row total-row">
+                    <span>Total Keseluruhan:</span>
+                    <span id="res-total">Rp 0</span>
+                </div>
+                
+                <button class="btn-share" id="btnShare" onclick="shareInvoice()">📤 Bagikan Rincian Biaya</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-layout-wrap">
+        <div class="footer-text">
+            powered by IN704500 Shanted ™
+        </div>
     </div>
 
     <script>
-        // SPLASH SCREEN
-        window.addEventListener('load', function() {
+        window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
-                splash.style.visibility = 'hidden';
-            }, 2000);
+                setTimeout(() => {
+                    splash.style.visibility = 'hidden';
+                }, 500); 
+            }, 1000); 
+
+            // Pasang event listener delegasi untuk baris spare part dinamis agar langsung kalkulasi saat diketik
+            document.getElementById('partRowsContainer').addEventListener('input', (e) => {
+                if (e.target.classList.contains('part-name') || e.target.classList.contains('part-price')) {
+                    calculatePrice();
+                }
+            });
         });
 
-        // MODAL PERSETUJUAN
-        const modal = document.getElementById('agreementModal');
-        const mainApp = document.getElementById('mainApp');
-        document.getElementById('btnSetuju').addEventListener('click', () => {
-            modal.style.display = 'none';
-            mainApp.style.display = 'block';
-        });
-        document.getElementById('btnTolak').addEventListener('click', () => alert('Anda harus menyetujui ketentuan untuk melanjutkan.'));
+        const HARGA_KUNJUNGAN = 45000;
+        const HARGA_EVENING = 150000;
+        let dataGlobal = {};
 
-        // ELEMEN KALKULATOR
-        const openMainBtn = document.getElementById('openMainBtn');
-        const closeMainBtn = document.getElementById('closeMainBtn');
-        const overlayCalc = document.getElementById('overlayCalc');
-        const popupMain = document.getElementById('popupMain');
         const themeBtn = document.getElementById('themeBtn');
-        const openGuideBtn = document.getElementById('openGuideBtn');
-        const closeGuideBtn = document.getElementById('closeGuideBtn');
-        const popupGuide = document.getElementById('popupGuide');
-        
-        const deviceSelect = document.getElementById('device');
-        const damageLevel = document.getElementById('damageLevel');
-        const infoCek = document.getElementById('infoCek');
-        const extraCost = document.getElementById('extraCost');
-        const freonCost = document.getElementById('freonCost');
-        const freonPanel = document.getElementById('freonPanel');
-        const biayaJasaEl = document.getElementById('biayaJasa');
-        const rowKunjungan = document.getElementById('rowKunjungan');
-        const rowEC = document.getElementById('rowEC');
-        const eveningCare = document.getElementById('eveningCare');
-        const rowSparepart = document.getElementById('rowSparepart');
-        const valSparepart = document.getElementById('valSparepart');
-        const rowFreon = document.getElementById('rowFreon');
-        const valFreon = document.getElementById('valFreon');
-        const subTotalEl = document.getElementById('subTotal');
-        const ppnValEl = document.getElementById('ppnVal');
-        const totalPriceEl = document.getElementById('totalPrice');
-        const serviceType = document.querySelectorAll('input[name="service_type"]');
-
-        // TAMPIL / SEMBUNYIKAN POPUP
-        openMainBtn.addEventListener('click', () => {
-            overlayCalc.classList.add('active');
-            popupMain.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-        function closePopup() {
-            overlayCalc.classList.remove('active');
-            popupMain.classList.remove('active');
-            popupGuide.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-        closeMainBtn.addEventListener('click', closePopup);
-        overlayCalc.addEventListener('click', (e) => { if (e.target === overlayCalc) closePopup(); });
-
-        // BUKA / TUTUP PANDUAN
-        openGuideBtn.addEventListener('click', () => popupGuide.classList.add('active'));
-        closeGuideBtn.addEventListener('click', () => popupGuide.classList.remove('active'));
-
-        // GANTI TEMA
         themeBtn.addEventListener('click', () => {
-            const html = document.documentElement;
-            html.dataset.theme = html.dataset.theme === 'light' ? 'dark' : 'light';
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
         });
 
-        // FUNGSI FORMAT RUPIAH
-        function formatRupiah(angka) {
-            return new Intl.NumberFormat('id-ID', { 
-                style: 'currency', 
-                currency: 'IDR', 
-                minimumFractionDigits: 0 
-            }).format(angka);
+        function toggleSidebar() {
+            const sidebar = document.getElementById('guideSidebar');
+            sidebar.classList.toggle('active');
+            const btn = document.querySelector('.sidebar-toggle-btn');
+            if(sidebar.classList.contains('active')) {
+                btn.innerHTML = "❌ Tutup Panduan";
+            } else {
+                btn.innerHTML = "📋 Buka Panduan";
+            }
         }
 
-        // FUNGSI HITUNG ULANG
-        function hitungBiaya() {
-            const val = deviceSelect.value;
-            let biayaDasar = 0;
-            let biayaKunjungan = 0;
-            let biayaEC = 0;
-            let biayaSparepart = parseInt(extraCost.value) || 0;
-            let biayaFreon = parseInt(freonCost.value) || 0;
-            let levelBiaya = 0;
-            const selectedLevel = damageLevel.value;
+        function addPartRow() {
+            const container = document.getElementById('partRowsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'part-row';
+            newRow.innerHTML = `
+                <input type="text" class="custom-input part-name" placeholder="Nama Komponen">
+                <input type="number" class="custom-input part-price" placeholder="Harga Unit (Rp)" min="0">
+            `;
+            container.appendChild(newRow);
+        }
 
-            // Cek Jenis Layanan
-            serviceType.forEach(opt => {
-                if (opt.checked && opt.value === 'in_home') {
-                    biayaKunjungan = 45000;
-                    document.getElementById('ecOption').style.display = 'block';
-                } else if (opt.checked && opt.value === 'in_shop') {
-                    biayaKunjungan = 0;
-                    document.getElementById('ecOption').style.display = 'none';
-                    eveningCare.checked = false;
+        function formatCurrency(num) {
+            return "Rp " + Math.round(num).toLocaleString('id-ID');
+        }
+
+        function onDeviceChange() {
+            document.getElementById('manualLevelSelect').value = 'auto';
+            const deviceSelect = document.getElementById('device');
+            const selectedOption = deviceSelect.options[deviceSelect.selectedIndex];
+            const isRefrigeration = selectedOption.getAttribute('data-type') === 'refrigeration';
+            const freonPanel = document.getElementById('freonPanel');
+
+            if (isRefrigeration) {
+                freonPanel.style.display = 'block';
+            } else {
+                freonPanel.style.display = 'none';
+                document.querySelector('input[name="freon_usage"][value="tidak"]').checked = true;
+                document.getElementById('freonInputContainer').style.display = 'none';
+                document.getElementById('freonPriceInput').value = '';
+            }
+
+            calculatePrice();
+        }
+
+        function onFreonToggleChange() {
+            const freonUsage = document.querySelector('input[name="freon_usage"]:checked').value;
+            const freonInputContainer = document.getElementById('freonInputContainer');
+            
+            if (freonUsage === 'ya') {
+                freonInputContainer.style.display = 'block';
+            } else {
+                freonInputContainer.style.display = 'none';
+                document.getElementById('freonPriceInput').value = '';
+            }
+            calculatePrice();
+        }
+
+        function onSparepartToggleChange() {
+            document.getElementById('manualLevelSelect').value = 'auto';
+            calculatePrice();
+        }
+
+        function onManualLevelChange() {
+            calculatePrice();
+        }
+
+        function calculatePrice() {
+            const deviceSelect = document.getElementById('device');
+            if (!deviceSelect.value) return;
+
+            document.getElementById('labelVisitPrice').innerText = formatCurrency(HARGA_KUNJUNGAN);
+            document.getElementById('labelEveningPrice').innerText = formatCurrency(HARGA_EVENING);
+
+            const serviceType = document.querySelector('input[name="service_type"]:checked').value;
+            const selectedOption = deviceSelect.options[deviceSelect.selectedIndex];
+            const parentGroup = selectedOption.parentNode;
+            
+            const priceMinor = parseFloat(selectedOption.getAttribute('data-minor')) || 0;
+            const priceMayor = parseFloat(selectedOption.getAttribute('data-mayor')) || 0;
+            const priceSpecial = parseFloat(selectedOption.getAttribute('data-special')) || 0;
+            const isHidePart = selectedOption.getAttribute('data-hide-part') === 'yes';
+            const isCancel = selectedOption.getAttribute('data-is-cancel') === 'yes';
+
+            const hasPart = document.getElementById('sparepart').checked;
+            let eveningCare = document.getElementById('eveningCare').checked;
+            const manualLevel = document.getElementById('manualLevelSelect').value;
+            
+            const inHomePanel = document.getElementById('inHomePanel');
+            const sparepartToggleGroup = document.getElementById('sparepartToggleGroup');
+            const sparepartSection = document.getElementById('sparepartSection');
+
+            let basePrice = 0;
+            let visitPrice = 0;
+            let eveningPrice = 0;
+            let partsTotalPrice = 0;
+            let freonTotalPrice = 0;
+            let levelCalculated = "Minor";
+
+            if (serviceType === 'in_home') {
+                inHomePanel.style.display = 'block';
+                visitPrice = HARGA_KUNJUNGAN;
+                if (eveningCare) {
+                    eveningPrice = HARGA_EVENING;
+                    document.getElementById('rowEvening').style.display = 'flex';
+                } else {
+                    document.getElementById('rowEvening').style.display = 'none';
                 }
-            });
+                document.getElementById('rowVisit').style.display = 'flex';
+            } else {
+                inHomePanel.style.display = 'none';
+                document.getElementById('eveningCare').checked = false;
+                eveningCare = false; // Sinkronisasi manual variabel lokal
+                document.getElementById('rowVisit').style.display = 'none';
+                document.getElementById('rowEvening').style.display = 'none';
+            }
 
-            // Cek Evening Care
-            if (eveningCare.checked) biayaEC = 150000;
-
-            // TAMPILKAN INFO KHUSUS PENGECEKAN
-            infoCek.style.display = (selectedLevel === 'cek') ? 'block' : 'none';
-
-            // --- LOGIKA KHUSUS PENGECEKAN / PEMBATALAN ---
-            if (selectedLevel === 'cek') {
-                if (val) {
-                    const harga = val.split('|').map(Number);
-                    biayaDasar = harga[0];
-                }
-                biayaSparepart = 0;
-                biayaFreon = 0;
-                extraCost.value = '';
-                freonCost.value = '';
-            } 
-            // --- LOGIKA BIASA / PERBAIKAN ---
-            else {
-                if (biayaSparepart > 0 && val) {
-                    const harga = val.split('|').map(Number);
-                    if (biayaSparepart > 1000000) {
-                        damageLevel.value = 'special';
-                        levelBiaya = harga[2];
-                    } else {
-                        damageLevel.value = 'mayor';
-                        levelBiaya = harga[1];
-                    }
-                    biayaDasar = levelBiaya;
-                } 
-                else if (val) {
-                    const harga = val.split('|').map(Number);
-                    if (selectedLevel === 'minor') levelBiaya = harga[0];
-                    if (selectedLevel === 'mayor') levelBiaya = harga[1];
-                    if (selectedLevel === 'special') levelBiaya = harga[2];
-                    biayaDasar = levelBiaya;
+            if (isCancel) {
+                document.getElementById('labelBasePrice').innerText = "Biaya Pembatalan / Diagnosa:";
+                sparepartToggleGroup.style.display = 'none';
+                levelCalculated = "Pembatalan / Diagnostik";
+            } else {
+                document.getElementById('labelBasePrice').innerText = "Ongkos Kerja Sesuai Kategori:";
+                if (isHidePart) {
+                    sparepartToggleGroup.style.display = 'none';
+                    levelCalculated = "Minor";
+                } else {
+                    sparepartToggleGroup.style.display = 'flex';
+                    levelCalculated = hasPart ? "Mayor" : "Minor";
                 }
             }
 
-            // Tampilkan / Sembunyikan baris
-            rowKunjungan.style.display = biayaKunjungan > 0 ? 'flex' : 'none';
-            rowEC.style.display = biayaEC > 0 ? 'flex' : 'none';
-            rowSparepart.style.display = biayaSparepart > 0 ? 'flex' : 'none';
-            rowFreon.style.display = biayaFreon > 0 ? 'flex' : 'none';
+            let finalLevel = (manualLevel === 'auto' || isCancel) ? levelCalculated : manualLevel;
 
-            // RUMUS PERHITUNGAN LENGKAP
-            const subTotal = biayaDasar + biayaKunjungan + biayaEC + biayaSparepart + biayaFreon;
-            const ppn = subTotal * 0.11;
-            const totalAkhir = subTotal + ppn;
+            if (isCancel) {
+                basePrice = priceMinor; 
+            } else {
+                if (finalLevel === 'Minor') basePrice = priceMinor;
+                if (finalLevel === 'Mayor') basePrice = priceMayor;
+                if (finalLevel === 'Special') basePrice = (priceSpecial > 0) ? priceSpecial : priceMayor;
+            }
 
-            // TAMPILKAN KE LAYAR
-            biayaJasaEl.innerText = formatRupiah(biayaDasar);
-            valSparepart.innerText = formatRupiah(biayaSparepart);
-            valFreon.innerText = formatRupiah(biayaFreon);
-            subTotalEl.innerText = formatRupiah(subTotal);
-            ppnValEl.innerText = formatRupiah(ppn);
-            totalPriceEl.innerText = formatRupiah(totalAkhir);
-        }
+            const selectElement = document.getElementById('manualLevelSelect');
+            if (isCancel) {
+                selectElement.value = 'auto';
+                selectElement.style.borderColor = 'var(--border-color)';
+            } else {
+                if (finalLevel === 'Minor') selectElement.style.borderColor = 'var(--badge-minor)';
+                if (finalLevel === 'Mayor') selectElement.style.borderColor = 'var(--badge-mayor)';
+                if (finalLevel === 'Special') selectElement.style.borderColor = 'var(--badge-special)';
+            }
 
-        // Tampilkan kolom Freon khusus AC & Kulkas
-        deviceSelect.addEventListener('change', function() {
-            const optgroup = this.selectedOptions[0].closest('optgroup');
-            const type = optgroup.dataset.type;
-            freonPanel.style.display = (type === 'ac' || type === 'kulkas') ? 'block' : 'none';
-            hitungBiaya();
-        });
+            const freonUsage = document.querySelector('input[name="freon_usage"]:checked');
+            if (freonUsage && freonUsage.value === 'ya') {
+                const freonVal = parseFloat(document.getElementById('freonPriceInput').value);
+                if (!isNaN(freonVal) && freonVal > 0) {
+                    freonTotalPrice = freonVal;
+                    document.getElementById('rowFreonTotal').style.display = 'flex';
+                    document.getElementById('res-freon').innerText = formatCurrency(freonTotalPrice);
+                } else {
+                    document.getElementById('rowFreonTotal').style.display = 'none';
+                }
+            } else {
+                document.getElementById('rowFreonTotal').style.display = 'none';
+            }
 
-        // Pemicu hitung ulang saat ada perubahan
-        damageLevel.addEventListener('change', hitungBiaya);
-        extraCost.addEventListener('input', hitungBiaya);
-        freonCost.addEventListener('input', hitungBiaya);
-        serviceType.forEach(opt => opt.addEventListener('change', hitungBiaya));
-        eveningCare.addEventListener('change', hitungBiaya);
-
-        // FORM LAPORAN & SIMPAN KE LOCALSTORAGE
-        const form = document.getElementById('formService');
-        const listLaporan = document.getElementById('listLaporan');
-        let dataLaporan = JSON.parse(localStorage.getItem('laporanLG')) || [];
-
-        function simpanData() {
-            localStorage.setItem('laporanLG', JSON.stringify(dataLaporan));
-            tampilkanData();
-        }
-
-        function tampilkanData() {
-            listLaporan.innerHTML = '';
-            dataLaporan.forEach((item, idx) => {
-                const baris = document.createElement('tr');
-                const statusClass = item.status === 'Baru Masuk' ? 'badge-masuk' : item.status === 'Sedang Diproses' ? 'badge-proses' : 'badge-selesai';
+            let listPartsForWA = [];
+            const showFormPart = !isCancel && (hasPart || deviceSelect.value === 'audio_etc');
+            
+            if (showFormPart) {
+                sparepartSection.style.display = 'block';
+                const rows = document.querySelectorAll('#partRowsContainer .part-row');
+                partsTotalPrice = 0;
                 
-                baris.innerHTML = `
-                    <td style="padding: 8px 6px; font-size: 0.78rem;">${item.tanggal}</td>
-                    <td style="padding: 8px 6px; font-size: 0.78rem; white-space: normal; line-height: 1.3;">
-                        <strong>${item.nama}</strong><br>
-                        ${item.kontak}<br>
-                        ${item.alamat}<br>
-                        ${item.sharelok ? `<a href="${item.sharelok}" target="_blank" class="link-lokasi">📍 Lihat Lokasi</a>` : ''}
-                    </td>
-                    <td style="padding: 8px 6px; font-size: 0.78rem;">${item.barang}</td>
-                    <td style="padding: 8px 6px; font-size: 0.78rem; white-space: normal; line-height: 1.3;">${item.keluhan}</td>
-                    <td style="padding: 8px 6px; font-size: 0.78rem;">
-                        <span class="badge ${statusClass}">${item.status}</span>
-                    </td>
-                    <td style="padding: 8px 4px; text-align: center;">
-                        <button class="btn-action btn-wa" onclick="bukaPilihan(${idx})">📩 KIRIM</button>
-                        <button class="btn-action btn-hapus" onclick="hapusData(${idx})">🗑️ Hapus</button>
-                    </td>
-                `;
-                listLaporan.appendChild(baris);
-            });
+                rows.forEach(row => {
+                    const nameInput = row.querySelector('.part-name').value.trim();
+                    const priceInput = parseFloat(row.querySelector('.part-price').value);
+                    
+                    if (!isNaN(priceInput) && priceInput > 0) {
+                        partsTotalPrice += priceInput;
+                        listPartsForWA.push({
+                            nama: nameInput || "Komponen Suku Cadang",
+                            harga: priceInput
+                        });
+                    }
+                });
+
+                if (partsTotalPrice > 0) {
+                    document.getElementById('rowPartsTotal').style.display = 'flex';
+                    document.getElementById('res-parts').innerText = formatCurrency(partsTotalPrice);
+                } else {
+                    document.getElementById('rowPartsTotal').style.display = 'none';
+                }
+            } else {
+                sparepartSection.style.display = 'none';
+                document.getElementById('rowPartsTotal').style.display = 'none';
+                // Reset isian form jika tidak digunakan agar tidak menumpuk di latar belakang
+                document.querySelectorAll('.part-price').forEach(input => input.value = '');
+                document.querySelectorAll('.part-name').forEach(input => input.value = '');
+            }
+
+            const subTotalSeluruhnya = basePrice + visitPrice + eveningPrice + partsTotalPrice + freonTotalPrice;
+            const nilaiTambahanPPN = subTotalSeluruhnya * 0.11; 
+            const totalAkhir = subTotalSeluruhnya + nilaiTambahanPPN; 
+
+            document.getElementById('res-base').innerText = formatCurrency(basePrice);
+            document.getElementById('res-ppn').innerText = formatCurrency(nilaiTambahanPPN);
+            document.getElementById('res-total').innerText = formatCurrency(totalAkhir);
+
+            let namaPerangkatBersih = parentGroup.getAttribute('label') || "Perangkat LG";
+            namaPerangkatBersih = namaPerangkatBersih.replace(/^\d+\.\s*/, ''); 
+
+            dataGlobal = {
+                deviceText: namaPerangkatBersih,
+                metode: (serviceType === 'in_home') ? 'In-Home (Kunjungan Rumah)' : 'Carry-In (Bawa ke service center)',
+                basePrice: basePrice,
+                visitPrice: visitPrice,
+                eveningPrice: eveningPrice,
+                freonPrice: freonTotalPrice,
+                partsList: listPartsForWA,
+                partsTotal: partsTotalPrice,
+                ppn: nilaiTambahanPPN,
+                total: totalAkhir,
+                isCancel: isCancel
+            };
         }
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const laporanBaru = {
-                tanggal: new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit', year:'numeric'}),
-                nama: document.getElementById('namaPelanggan').value,
-                kontak: document.getElementById('kontak').value,
-                alamat: document.getElementById('alamat').value,
-                sharelok: document.getElementById('sharelok').value,
-                barang: document.getElementById('namaBarang').value,
-                keluhan: document.getElementById('keluhan').value,
-                tipe: document.getElementById('tipeLayanan').value,
-                status: document.getElementById('status').value
-            };
-            dataLaporan.unshift(laporanBaru);
-            simpanData();
-            form.reset();
-            alert('✅ Laporan berhasil disimpan!');
-        });
-
-        window.hapusData = function(idx) {
-            if(confirm('Yakin ingin menghapus laporan ini?')) {
-                dataLaporan.splice(idx, 1);
-                simpanData();
+        function createInvoiceText() {
+            let txt = `*Yth. Pelanggan LG Electronics*\n`;
+            txt += `Berikut rincian estimasi biaya perbaikan produk Anda:\n\n`;
+            txt += `• *Perangkat:* ${dataGlobal.deviceText}\n`;
+            txt += `• *Metode Layanan:* ${dataGlobal.metode}\n`;
+            txt += `=========================\n\n`;
+            txt += `*RINCIAN BIAYA:*\n`;
+            
+            if (dataGlobal.isCancel) {
+                txt += `• Biaya Pembatalan / Diagnosa: ${formatCurrency(dataGlobal.basePrice)}\n`;
+            } else {
+                txt += `• Ongkos Kerja: ${formatCurrency(dataGlobal.basePrice)}\n`;
             }
-        };
+            
+            if (dataGlobal.visitPrice > 0) {
+                txt += `• Biaya Transpor: ${formatCurrency(dataGlobal.visitPrice)}\n`;
+            }
+            if (dataGlobal.eveningPrice > 0) {
+                txt += `• Layanan Evening Care: ${formatCurrency(dataGlobal.eveningPrice)}\n`;
+            }
+            if (dataGlobal.freonPrice > 0) {
+                txt += `• Material Freon: ${formatCurrency(dataGlobal.freonPrice)}\n`;
+            }
 
-        // ✅ FUNGSI POPUP PILIHAN KIRIM
-        const overlayPilih = document.getElementById('overlayPilih');
-        const popupPilih = document.getElementById('popupPilih');
-        const tombolBukaPilih = document.getElementById('tombolBukaPilih');
-        const tutupPilih = document.getElementById('tutupPilih');
-        const kirimViaWA = document.getElementById('kirimViaWA');
-        const kirimViaEmail = document.getElementById('kirimViaEmail');
-        let idxAktif = null;
+            if (dataGlobal.partsList.length > 0) {
+                txt += `\n*Suku Cadang / Spare Part:*\n`;
+                dataGlobal.partsList.forEach((item, index) => {
+                    txt += `  ${index + 1}. ${item.nama}: ${formatCurrency(item.harga)}\n`;
+                });
+                txt += `• Total Spare Part: ${formatCurrency(dataGlobal.partsTotal)}\n`;
+            }
 
-        // Buka popup dari tombol di bawah form
-        tombolBukaPilih.addEventListener('click', () => {
-            if(dataLaporan.length === 0) {
-                alert('⚠️ Isi formulir dan simpan data terlebih dahulu!');
+            txt += `\n-------------------------\n`;
+            txt += `• PPN (11%): ${formatCurrency(dataGlobal.ppn)}\n`;
+            txt += `• *TOTAL PEMBAYARAN:* *${formatCurrency(dataGlobal.total)}*\n\n`;
+            txt += `*Note:* Harga yang tertera hanya estimasi / perkiraan awal. Rincian detail dan final akan disampaikan kembali oleh teknisi kami di lapangan sesuai dengan tingkat kerusakan nyata, spesifikasi, dan tipe produk Anda.\n\n`;
+            txt += `Terima kasih telah mempercayai layanan resmi LG Service Center.`;
+            return txt;
+        }
+
+        async function shareInvoice() {
+            if (!document.getElementById('device').value) {
+                alert("Silakan pilih jenis perangkat terlebih dahulu.");
                 return;
             }
-            idxAktif = 0; // Kirim data paling atas / terbaru
-            overlayPilih.classList.add('active');
-            popupPilih.classList.add('active');
-        });
+            const shareText = createInvoiceText();
+            const btn = document.getElementById('btnShare');
 
-        // Buka popup dari tombol di tabel
-        window.bukaPilihan = function(idx) {
-            idxAktif = idx;
-            overlayPilih.classList.add('active');
-            popupPilih.classList.add('active');
-        };
-
-        // Tutup popup
-        function tutupSemuaPilihan() {
-            overlayPilih.classList.remove('active');
-            popupPilih.classList.remove('active');
-            idxAktif = null;
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Rincian Biaya LG Service Center',
+                        text: shareText
+                    });
+                } catch (err) {
+                    // Fallback jika proses share bawaan OS dibatalkan user
+                    copyToClipboard(shareText, btn);
+                }
+            } else {
+                copyToClipboard(shareText, btn);
+            }
         }
-        tutupPilih.addEventListener('click', tutupSemuaPilihan);
-        overlayPilih.addEventListener('click', tutupSemuaPilihan);
 
-        // Kirim WA
-        kirimViaWA.addEventListener('click', () => {
-            const data = dataLaporan[idxAktif];
-            const pesan = encodeURIComponent(
-`*LAPORAN SERVICE LG ELECTRONICS*
-
-🤝 *Saya telah menyetujui ketententuan biaya pngecekan / pembatalan , buatkan saya jadwal kunjungan
-📅 Tanggal: ${data.tanggal}
-👤 Nama: ${data.nama}
-📞 Kontak: ${data.kontak}
-🏠 Alamat: ${data.alamat}
-📍 Lokasi: ${data.sharelok || '-'}
-📦 Produk: ${data.barang}
-💬 Keluhan: ${data.keluhan}
-🛠️ Layanan: ${data.tipe}
-📊 Status: ${data.status}`     
-                   );
-            const linkWA = `https://wa.me/6281241256747?text=${pesan}`;
-            window.open(linkWA, '_blank');
-            tutupSemuaPilihan();
-        });
-
-        // Kirim Email
-        kirimViaEmail.addEventListener('click', () => {
-            const data = dataLaporan[idxAktif];
-            const isiPesan = 
-`LAPORAN SERVICE LG ELECTRONICS
-------------------------------------
-🗓️Tanggal     : ${data.tanggal}
-🙋Nama        : ${data.nama}
-📱Kontak      : ${data.kontak}
-📝Alamat      : ${data.alamat}
-📍Lokasi Maps : ${data.sharelok || '-'}
-📦Produk      : ${data.barang}
-💬Keluhan     : ${data.keluhan}
-🛠️Tipe Layanan: ${data.tipe}
-🟢Status      : ${data.status}
-------------------------------------
-🤝*Saya telah menyetujui ketentuan dan persyaratan yang berlaku , Buatkan saya jadwal kunjungan*`;
-
-            const subjek = encodeURIComponent("Laporan Service Baru - " + data.nama);
-            const badan = encodeURIComponent(isiPesan);
-            const linkEmail = `mailto:Alqadri.syarif@lge.com?subject=${subjek}&body=${badan}`;
-            window.open(linkEmail, '_blank');
-            tutupSemuaPilihan();
-        });
-
-        tampilkanData();
+        function copyToClipboard(text, targetButton) {
+            navigator.clipboard.writeText(text).then(() => {
+                targetButton.innerHTML = "✅ Rincian Biaya Tersalin!";
+                setTimeout(() => {
+                    targetButton.innerHTML = "📤 Bagikan Rincian Biaya";
+                }, 2500);
+            }).catch(() => {
+                alert("Gagal menyalin otomatis. Silakan salin teks secara manual.");
+            });
+        }
     </script>
 </body>
 </html>
-

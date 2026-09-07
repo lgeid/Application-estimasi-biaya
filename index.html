@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kalkulator Layanan LG Service Electronics</title>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         /* --- Tema Warna & Variabel Premium --- */
         :root {
@@ -214,7 +216,7 @@
             color: var(--primary-color);
             letter-spacing: -0.5px;
             line-height: 1.2;
-            cursor: pointer; /* Indikasi bisa ditekan untuk akses rahasia */
+            cursor: pointer;
             user-select: none;
         }
 
@@ -791,6 +793,8 @@
         </div>
     </div>
 
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let HARGA_KUNJUNGAN = 45000;
         let HARGA_EVENING = 150000;
@@ -807,17 +811,16 @@
 
             loadCustomSettingsFromStorage();
 
-            // Pasang event listener delegasi untuk baris spare part dinamis agar langsung kalkulasi saat diketik
             document.getElementById('partRowsContainer').addEventListener('input', (e) => {
                 if (e.target.classList.contains('part-name') || e.target.classList.contains('part-price')) {
                     calculatePrice();
                 }
             });
 
-            // Tombol Rahasia: Klik teks judul "LG Service Electronics" 5 kali untuk membuka modal
+            // Tombol Rahasia: Klik teks judul "LG Service Electronics" 5 kali untuk membuka SweetAlert Password
             let clickCount = 0;
             let clickTimer = null;
-            document.getElementById('secretTrigger').addEventListener('click', () => {
+            document.getElementById('secretTrigger').addEventListener('click', async () => {
                 clickCount++;
                 if (clickTimer) clearTimeout(clickTimer);
                 
@@ -827,11 +830,31 @@
 
                 if (clickCount >= 5) {
                     clickCount = 0;
-                    let pin = prompt("Masukkan PIN Keamanan Rahasia (Default: 777):");
+                    
+                    const { value: pin } = await Swal.fire({
+                        title: '🔒 Keamanan Rahasia',
+                        text: 'Masukkan PIN Keamanan Rahasia (Default: 777):',
+                        input: 'password',
+                        inputPlaceholder: 'Masukkan sandi...',
+                        inputAttributes: {
+                            autocapitalize: 'off',
+                            autocorrect: 'off'
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: 'Masuk',
+                        cancelButtonText: 'Batal',
+                        confirmButtonColor: 'var(--primary-color)'
+                    });
+
                     if (pin === "777") {
                         openSecretModal();
-                    } else if (pin !== null) {
-                        alert("PIN Salah!");
+                    } else if (pin !== undefined) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'PIN Salah!',
+                            confirmButtonColor: 'var(--primary-color)'
+                        });
                     }
                 }
             });
@@ -875,7 +898,6 @@
                 groupWrapper.style.borderRadius = "10px";
                 groupWrapper.style.border = "1px solid var(--border-color)";
 
-                // Input untuk edit Nama Kategori / Grup Produk
                 let groupHtml = `
                     <div style="margin-bottom: 8px;">
                         <label style="font-size:11px; font-weight:bold; color:var(--primary-color);">Nama Grup/Kategori:</label>
@@ -883,7 +905,6 @@
                     </div>
                 `;
 
-                // Iterasi opsi di dalam grup (Repaire & Cancel)
                 let options = group.querySelectorAll('option');
                 options.forEach(opt => {
                     let val = opt.value;
@@ -920,7 +941,6 @@
             HARGA_KUNJUNGAN = parseFloat(document.getElementById('editVisitPrice').value) || 45000;
             HARGA_EVENING = parseFloat(document.getElementById('editEveningPrice').value) || 150000;
 
-            // Simpan perubahan Nama Grup
             const groupInputs = document.querySelectorAll('.secret-group-input');
             groupInputs.forEach(input => {
                 let gId = input.getAttribute('data-group-id');
@@ -931,7 +951,6 @@
                 }
             });
 
-            // Simpan perubahan Nama Opsi Sub
             const optNameInputs = document.querySelectorAll('.secret-opt-name');
             optNameInputs.forEach(input => {
                 let val = input.getAttribute('data-val');
@@ -942,7 +961,6 @@
                 }
             });
 
-            // Simpan perubahan Harga
             const priceInputs = document.querySelectorAll('.secret-price-input');
             priceInputs.forEach(input => {
                 let val = input.getAttribute('data-val');
@@ -955,7 +973,6 @@
                 }
             });
 
-            // Simpan seluruh konfigurasi ke localStorage agar permanen
             let savedData = {
                 visit: HARGA_KUNJUNGAN,
                 evening: HARGA_EVENING,
@@ -981,7 +998,13 @@
 
             closeSecretModal();
             calculatePrice();
-            alert("Nama produk & harga berhasil diperbarui dan disimpan!");
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Nama produk & harga berhasil diperbarui dan disimpan!',
+                confirmButtonColor: 'var(--primary-color)'
+            });
         }
 
         function loadCustomSettingsFromStorage() {

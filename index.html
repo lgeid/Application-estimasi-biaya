@@ -6,6 +6,8 @@
     <title>Kalkulator Layanan LG Service Electronics</title>
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- jsPDF Library untuk Ekspor PDF Formal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         /* --- Tema Warna & Variabel Premium --- */
         :root {
@@ -24,6 +26,8 @@
             --badge-special: #e76f51;
             --share-color: #0076d6;
             --share-hover: #005eb3;
+            --pdf-color: #d90429;
+            --pdf-hover: #b50322;
             --sidebar-width: 300px;
         }
 
@@ -463,8 +467,20 @@
             font-weight: 800;
         }
 
-        .btn-share {
-            background-color: var(--share-color);
+        .action-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        @media (min-width: 480px) {
+            .action-btn-group {
+                flex-direction: row;
+            }
+        }
+
+        .btn-share, .btn-pdf {
             color: #ffffff;
             border: none;
             padding: 15px 20px;
@@ -472,18 +488,29 @@
             font-weight: 700;
             font-size: 15px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 18px;
-            box-shadow: 0 6px 20px rgba(0, 118, 214, 0.15);
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
 
+        .btn-share {
+            background-color: var(--share-color);
+            box-shadow: 0 6px 20px rgba(0, 118, 214, 0.15);
+        }
+
         .btn-share:hover {
             background-color: var(--share-hover);
-            transform: translateY(-1px);
+        }
+
+        .btn-pdf {
+            background-color: var(--pdf-color);
+            box-shadow: 0 6px 20px rgba(217, 4, 41, 0.15);
+        }
+
+        .btn-pdf:hover {
+            background-color: var(--pdf-hover);
         }
 
         .footer-layout-wrap {
@@ -511,7 +538,7 @@
             background-color: rgba(0, 0, 0, 0.3);
         }
 
-        /* --- Panel Modal Pengaturan Harga & Nama Rahasia --- */
+        /* --- Panel Modal Pengaturan Harga & Produk Baru --- */
         #secretModal {
             position: fixed;
             top: 0;
@@ -573,6 +600,22 @@
             cursor: pointer;
             font-weight: bold;
         }
+        .btn-add-product-panel {
+            background-color: var(--accent-bg);
+            border: 1.5px dashed var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .btn-add-product-panel:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -581,11 +624,11 @@
         <img src="https://files.catbox.moe/qksxi0.svg" alt="LG Logo" class="splash-logo">
     </div>
 
-    <!-- Tombol Modal Rahasia Pengaturan Harga & Nama Produk -->
+    <!-- Tombol Modal Rahasia Pengaturan Harga, Produk & Tambah Produk Baru -->
     <div id="secretModal">
         <div class="secret-content">
-            <h3>🔐 Panel Rahasia Kelola Nama & Harga</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Ubah nama grup/kategori utama, nama opsi perbaikan, serta tarif biayanya di sini. Tersimpan otomatis di perangkat ini.</p>
+            <h3>🔐 Panel Rahasia Kelola & Tambah Produk</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Ubah tarif dasar, edit kategori/produk terdaftar, atau tambahkan produk baru dengan format standar sistem.</p>
             
             <div class="secret-item">
                 <label>Biaya Kunjungan Standar (Rp)</label>
@@ -601,7 +644,9 @@
                 <!-- Diisi otomatis via JavaScript -->
             </div>
 
-            <div class="secret-buttons">
+            <button type="button" class="btn-add-product-panel" onclick="addNewProductEntry()">+ Tambah Produk Baru</button>
+
+            <div class="secret-buttons" style="margin-top: 25px;">
                 <button class="btn-secret-close" onclick="closeSecretModal()">Batal</button>
                 <button class="btn-secret-save" onclick="saveSecretSettings()">Simpan Perubahan</button>
             </div>
@@ -617,7 +662,7 @@
             <li class="step-item"><span class="step-num">2</span><strong>Pilih Perangkat:</strong> Pilih tipe produk elektronik yang bermasalah pada menu dropdown utama.</li>
             <li class="step-item"><span class="step-num">3</span><strong>Freon Otomatis:</strong> Opsi freon akan muncul khusus jika tipe produk kulkas atau AC dipilih.</li>
             <li class="step-item"><span class="step-num">4</span><strong>Suku Cadang:</strong> Centang opsi sparepart jika ada penggantian komponen fisik untuk menambahkan daftar dan total biaya.</li>
-            <li class="step-item"><span class="step-num">5</span><strong>Bagikan Hasil:</strong> Klik tombol ekspor di bawah untuk menyalin/membagikan estimasi biaya ke WhatsApp.</li>
+            <li class="step-item"><span class="step-num">5</span><strong>Bagikan Hasil:</strong> Klik tombol ekspor PDF atau WhatsApp di bawah untuk mengirimkan rincian resmi.</li>
         </ul>
     </div>
 
@@ -661,48 +706,48 @@
                 <select id="device" class="custom-select" onchange="onDeviceChange()">
                     <option value="" disabled selected>--- Pilih jenis Produk ---</option>
                     <optgroup label="1. TV 19 - 32 inch" data-group-id="g1">
-                        <option value="tv1" data-minor="120000" data-mayor="210000" data-special="300000">Repaire</option>
-                        <option value="tv1_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="tv1" data-minor="120000" data-mayor="210000" data-special="300000">2. Service (minor, mayor, special)</option>
+                        <option value="tv1_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="2. TV 32 inch" data-group-id="g2">
-                        <option value="tv2" data-minor="165000" data-mayor="255000" data-special="350000">Repaire</option>
-                        <option value="tv2_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="tv2" data-minor="165000" data-mayor="255000" data-special="350000">2. Service (minor, mayor, special)</option>
+                        <option value="tv2_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="3. TV 43 - 75 inch" data-group-id="g3">
-                        <option value="tv3" data-minor="205000" data-mayor="340000" data-special="500000">Repaire</option>
-                        <option value="tv3_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="tv3" data-minor="205000" data-mayor="340000" data-special="500000">2. Service (minor, mayor, special)</option>
+                        <option value="tv3_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="4. TV 80 - 98 inch" data-group-id="g4">
-                        <option value="tv4" data-minor="210000" data-mayor="400000" data-special="550000">Repaire</option>
-                        <option value="tv4_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="tv4" data-minor="210000" data-mayor="400000" data-special="550000">2. Service (minor, mayor, special)</option>
+                        <option value="tv4_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="5. TV 100 inch" data-group-id="g5">
-                        <option value="tv5" data-minor="500000" data-mayor="600000" data-special="700000">Repaire</option>
-                        <option value="tv5_cancel" data-minor="200000" data-mayor="200000" data-special="200000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="tv5" data-minor="500000" data-mayor="600000" data-special="700000">2. Service (minor, mayor, special)</option>
+                        <option value="tv5_cancel" data-minor="200000" data-mayor="200000" data-special="200000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="6. Mesin Cuci Top Loading" data-group-id="g6">
-                        <option value="wm_top" data-minor="120000" data-mayor="130000" data-special="200000">Repaire</option>
-                        <option value="wm_top_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="wm_top" data-minor="120000" data-mayor="130000" data-special="200000">2. Service (minor, mayor, special)</option>
+                        <option value="wm_top_cancel" data-minor="150000" data-mayor="150000" data-special="150000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="7. Mesin Cuci Front Loading" data-group-id="g7">
-                        <option value="wm_front" data-minor="150000" data-mayor="185000" data-special="260000">Repaire</option>
-                        <option value="wm_front_cancel" data-minor="130000" data-mayor="130000" data-special="130000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="wm_front" data-minor="150000" data-mayor="185000" data-special="260000">2. Service (minor, mayor, special)</option>
+                        <option value="wm_front_cancel" data-minor="130000" data-mayor="130000" data-special="130000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="8. Kulkas 1 Pintu & 2 Pintu" data-group-id="g8">
-                        <option value="ref_small" data-type="refrigeration" data-minor="115000" data-mayor="210000" data-special="290000">Repaire</option>
-                        <option value="ref_small_cancel" data-minor="110000" data-mayor="110000" data-special="110000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="ref_small" data-type="refrigeration" data-minor="115000" data-mayor="210000" data-special="290000">2. Service (minor, mayor, special)</option>
+                        <option value="ref_small_cancel" data-minor="110000" data-mayor="110000" data-special="110000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="9. Kulkas Side By Side" data-group-id="g9">
-                        <option value="ref_sbs" data-type="refrigeration" data-minor="155000" data-mayor="265000" data-special="370000">Repaire</option>
-                        <option value="ref_sbs_cancel" data-minor="145000" data-mayor="145000" data-special="145000" data-hide-part="yes" data-is-cancel="yes">Pengecekan / pembatalan</option>
+                        <option value="ref_sbs" data-type="refrigeration" data-minor="155000" data-mayor="265000" data-special="370000">2. Service (minor, mayor, special)</option>
+                        <option value="ref_sbs_cancel" data-minor="145000" data-mayor="145000" data-special="145000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="10. AC (Semua PK penggunaan rumah tangga)" data-group-id="g10">
-                        <option value="ac" data-type="refrigeration" data-minor="110000" data-mayor="300000" data-special="420000">Repaire</option>
-                        <option value="ac_cancel" data-minor="110000" data-mayor="110000" data-special="110000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="ac" data-type="refrigeration" data-minor="110000" data-mayor="300000" data-special="420000">2. Service (minor, mayor, special)</option>
+                        <option value="ac_cancel" data-minor="110000" data-mayor="110000" data-special="110000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                     <optgroup label="11. Audio, Microwave, HP" data-group-id="g11">
-                        <option value="audio_etc" data-minor="160000" data-mayor="160000" data-special="200000">Repaire</option>
-                        <option value="audio_etc_cancel" data-minor="80000" data-mayor="80000" data-special="80000" data-hide-part="yes" data-is-cancel="yes">Pembatalan / pengecekan</option>
+                        <option value="audio_etc" data-minor="160000" data-mayor="160000" data-special="200000">2. Service (minor, mayor, special)</option>
+                        <option value="audio_etc_cancel" data-minor="80000" data-mayor="80000" data-special="80000" data-hide-part="yes" data-is-cancel="yes">1. Pengecekan / pembatalan</option>
                     </optgroup>
                 </select>
             </div>
@@ -782,7 +827,10 @@
                     <span id="res-total">Rp 0</span>
                 </div>
 
-                <button class="btn-share" id="btnShare" onclick="shareInvoice()">📤 Bagikan Rincian Biaya</button>
+                <div class="action-btn-group">
+                    <button class="btn-pdf" id="btnPdf" onclick="promptCustomerData('pdf')">📄 Kirim PDF ke WA</button>
+                    <button class="btn-share" id="btnShare" onclick="promptCustomerData('text')">📤 Bagikan Teks WA</button>
+                </div>
             </div>
         </div>
     </div>
@@ -878,17 +926,23 @@
             }
         }
 
-        // --- Logika Panel Rahasia (Edit Nama & Harga) ---
+        // --- Logika Panel Rahasia (Edit Nama & Harga serta Tambah Produk Baru) ---
         function openSecretModal() {
             document.getElementById('editVisitPrice').value = HARGA_KUNJUNGAN;
             document.getElementById('editEveningPrice').value = HARGA_EVENING;
 
+            renderSecretDeviceList();
+            document.getElementById('secretModal').style.display = 'flex';
+        }
+
+        function renderSecretDeviceList() {
             const container = document.getElementById('secretDeviceListContainer');
             container.innerHTML = '';
 
             const optgroups = document.querySelectorAll('#device optgroup');
-            optgroups.forEach(group => {
-                let groupId = group.getAttribute('data-group-id');
+            optgroups.forEach((group, index) => {
+                let groupId = group.getAttribute('data-group-id') || ('g_custom_' + index);
+                group.setAttribute('data-group-id', groupId);
                 let groupLabel = group.getAttribute('label');
 
                 let groupWrapper = document.createElement('div');
@@ -899,9 +953,12 @@
                 groupWrapper.style.border = "1px solid var(--border-color)";
 
                 let groupHtml = `
-                    <div style="margin-bottom: 8px;">
-                        <label style="font-size:11px; font-weight:bold; color:var(--primary-color);">Nama Grup/Kategori:</label>
-                        <input type="text" value="${groupLabel}" data-group-id="${groupId}" class="custom-input secret-group-input" style="padding:8px; font-size:13px; font-weight:bold;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="flex: 1;">
+                            <label style="font-size:11px; font-weight:bold; color:var(--primary-color);">Nama Grup/Kategori:</label>
+                            <input type="text" value="${groupLabel}" data-group-id="${groupId}" class="custom-input secret-group-input" style="padding:8px; font-size:13px; font-weight:bold;">
+                        </div>
+                        <button type="button" onclick="deleteProductGroup('${groupId}')" style="background:none; border:none; color:var(--primary-color); font-size:16px; cursor:pointer; margin-left:8px; padding-top:16px;" title="Hapus Kategori">🗑️</button>
                     </div>
                 `;
 
@@ -929,8 +986,48 @@
                 groupWrapper.innerHTML = groupHtml;
                 container.appendChild(groupWrapper);
             });
+        }
 
-            document.getElementById('secretModal').style.display = 'flex';
+        function addNewProductEntry() {
+            const selectDevice = document.getElementById('device');
+            const newId = 'prod_' + Date.now();
+            const groupCount = selectDevice.querySelectorAll('optgroup').length + 1;
+            
+            const newOptGroup = document.createElement('optgroup');
+            newOptGroup.setAttribute('label', `${groupCount}. Produk Baru`);
+            newOptGroup.setAttribute('data-group-id', 'g_' + Date.now());
+
+            const optCancel = document.createElement('option');
+            optCancel.value = newId + '_cancel';
+            optCancel.textContent = '1. Pengecekan / pembatalan';
+            optCancel.setAttribute('data-minor', '150000');
+            optCancel.setAttribute('data-mayor', '150000');
+            optCancel.setAttribute('data-special', '150000');
+            optCancel.setAttribute('data-hide-part', 'yes');
+            optCancel.setAttribute('data-is-cancel', 'yes');
+
+            const optService = document.createElement('option');
+            optService.value = newId;
+            optService.textContent = '2. Service (minor, mayor, special)';
+            optService.setAttribute('data-minor', '120000');
+            optService.setAttribute('data-mayor', '200000');
+            optService.setAttribute('data-special', '300000');
+
+            newOptGroup.appendChild(optService);
+            newOptGroup.appendChild(optCancel);
+            selectDevice.appendChild(newOptGroup);
+
+            renderSecretDeviceList();
+            const container = document.getElementById('secretDeviceListContainer');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function deleteProductGroup(groupId) {
+            const group = document.querySelector(`#device optgroup[data-group-id="${groupId}"]`);
+            if (group) {
+                group.remove();
+                renderSecretDeviceList();
+            }
         }
 
         function closeSecretModal() {
@@ -973,28 +1070,7 @@
                 }
             });
 
-            let savedData = {
-                visit: HARGA_KUNJUNGAN,
-                evening: HARGA_EVENING,
-                groups: {},
-                options: {}
-            };
-
-            document.querySelectorAll('#device optgroup').forEach(group => {
-                let gId = group.getAttribute('data-group-id');
-                savedData.groups[gId] = group.getAttribute('label');
-            });
-
-            document.querySelectorAll('#device option:not([disabled])').forEach(opt => {
-                savedData.options[opt.value] = {
-                    text: opt.textContent,
-                    minor: opt.getAttribute('data-minor'),
-                    mayor: opt.getAttribute('data-mayor'),
-                    special: opt.getAttribute('data-special')
-                };
-            });
-
-            localStorage.setItem('lg_service_custom_settings', JSON.stringify(savedData));
+            saveSettingsToLocalStorage();
 
             closeSecretModal();
             calculatePrice();
@@ -1002,39 +1078,32 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: 'Nama produk & harga berhasil diperbarui dan disimpan!',
+                text: 'Pengaturan produk dan harga berhasil disimpan!',
                 confirmButtonColor: 'var(--primary-color)'
             });
         }
 
+        function saveSettingsToLocalStorage() {
+            let savedData = {
+                visit: HARGA_KUNJUNGAN,
+                evening: HARGA_EVENING,
+                htmlContent: document.getElementById('device').innerHTML
+            };
+            localStorage.setItem('lg_service_advanced_settings', JSON.stringify(savedData));
+        }
+
         function loadCustomSettingsFromStorage() {
-            let stored = localStorage.getItem('lg_service_custom_settings');
+            let stored = localStorage.getItem('lg_service_advanced_settings');
             if (stored) {
                 try {
                     let parsed = JSON.parse(stored);
                     if (parsed.visit) HARGA_KUNJUNGAN = parsed.visit;
                     if (parsed.evening) HARGA_EVENING = parsed.evening;
-                    
-                    if (parsed.groups) {
-                        for (let gId in parsed.groups) {
-                            let group = document.querySelector(`#device optgroup[data-group-id="${gId}"]`);
-                            if (group) group.setAttribute('label', parsed.groups[gId]);
-                        }
-                    }
-
-                    if (parsed.options) {
-                        for (let key in parsed.options) {
-                            let opt = document.querySelector(`#device option[value="${key}"]`);
-                            if (opt) {
-                                opt.textContent = parsed.options[key].text;
-                                opt.setAttribute('data-minor', parsed.options[key].minor);
-                                opt.setAttribute('data-mayor', parsed.options[key].mayor);
-                                opt.setAttribute('data-special', parsed.options[key].special);
-                            }
-                        }
+                    if (parsed.htmlContent) {
+                        document.getElementById('device').innerHTML = parsed.htmlContent;
                     }
                 } catch(e) {
-                    console.error("Gagal memuat penyimpanan kustom");
+                    console.error("Gagal memuat penyimpanan kustom lanjutan");
                 }
             }
         }
@@ -1195,7 +1264,7 @@
             }
 
             let listPartsForWA = [];
-            const showFormPart = !isCancel && (hasPart || deviceSelect.value === 'audio_etc');
+            const showFormPart = !isCancel && hasPart;
 
             if (showFormPart) {
                 sparepartSection.style.display = 'block';
@@ -1224,8 +1293,6 @@
             } else {
                 sparepartSection.style.display = 'none';
                 document.getElementById('rowPartsTotal').style.display = 'none';
-                document.querySelectorAll('.part-price').forEach(input => input.value = '');
-                document.querySelectorAll('.part-name').forEach(input => input.value = '');
             }
 
             const subTotalSeluruhnya = basePrice + visitPrice + eveningPrice + partsTotalPrice + freonTotalPrice;
@@ -1250,14 +1317,262 @@
                 partsTotal: partsTotalPrice,
                 ppn: nilaiTambahanPPN,
                 total: totalAkhir,
-                isCancel: isCancel
+                isCancel: isCancel,
+                levelName: finalLevel
             };
         }
 
+        // --- Fungsi Input Data Customer Sebelum Mengirim ---
+        async function promptCustomerData(type) {
+            if (!document.getElementById('device').value) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Silakan pilih jenis perangkat terlebih dahulu.',
+                    confirmButtonColor: 'var(--primary-color)'
+                });
+                return;
+            }
+
+            const { value: formValues } = await Swal.fire({
+                title: '👤 Data Customer / Perusahaan',
+                html:
+                    '<input id="swal-name" class="swal2-input" placeholder="Nama / Perusahaan Customer" style="font-size:14px;">' +
+                    '<textarea id="swal-address" class="swal2-textarea" placeholder="Alamat Lengkap" style="font-size:14px; height:70px;"></textarea>' +
+                    '<input id="swal-postal" class="swal2-input" placeholder="Kode Pos" style="font-size:14px;">' +
+                    '<input id="swal-phone" class="swal2-input" placeholder="No HP / WhatsApp" style="font-size:14px;">' +
+                    '<input id="swal-model" class="swal2-input" placeholder="Model Perangkat (misal: 43LM5500PTA)" style="font-size:14px;">' +
+                    '<input id="swal-sn" class="swal2-input" placeholder="Nomor Seri / S/N" style="font-size:14px;">',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Lanjutkan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: 'var(--primary-color)',
+                preConfirm: () => {
+                    return {
+                        name: document.getElementById('swal-name').value.trim() || 'Pelanggan Umum',
+                        address: document.getElementById('swal-address').value.trim() || '-',
+                        postal: document.getElementById('swal-postal').value.trim() || '-',
+                        phone: document.getElementById('swal-phone').value.trim() || '-',
+                        model: document.getElementById('swal-model').value.trim() || '-',
+                        sn: document.getElementById('swal-sn').value.trim() || '-'
+                    }
+                }
+            });
+
+            if (formValues) {
+                dataGlobal.customer = formValues;
+                if (type === 'pdf') {
+                    generateAndSharePDF();
+                } else {
+                    shareInvoiceTextOnly();
+                }
+            }
+        }
+
+        // --- Fungsi Pembuatan PDF Formal dengan Background Logo LG ---
+        async function generateAndSharePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Tambahkan Background Logo LG (Watermark)
+            try {
+                const imgUrl = 'https://files.catbox.moe/pei2in.png';
+                const imgData = await getBase64FromUrl(imgUrl);
+                if (imgData) {
+                    doc.setGState(new doc.GState({ opacity: 0.12 }));
+                    doc.addImage(imgData, 'PNG', 45, 70, 120, 120);
+                    doc.setGState(new doc.GState({ opacity: 1.0 }));
+                }
+            } catch(e) {
+                console.log("Gagal memuat watermark background logo:", e);
+            }
+
+            // Kop Surat Resmi
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.setTextColor(165, 0, 52);
+            doc.text("PT LG ELEKTRONIK SERVICE INDONESIA", 105, 20, { align: "center" });
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(90, 98, 106);
+            doc.text("Official Customer Service & Authorized Repair Center", 105, 26, { align: "center" });
+
+            doc.setLineWidth(0.5);
+            doc.setDrawColor(165, 0, 52);
+            doc.line(15, 32, 195, 32);
+
+            // Judul Dokumen
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.setTextColor(33, 37, 41);
+            doc.text("SURAT ESTIMASI BIAYA PERBAIKAN", 105, 42, { align: "center" });
+
+            // Informasi Tanggal
+            const dateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9.5);
+            doc.text(`Tanggal: ${dateStr}`, 15, 50);
+
+            // Kotak Informasi Customer
+            doc.setFillColor(244, 245, 247);
+            doc.roundedRect(15, 54, 180, 24, 3, 3, 'F');
+            doc.setFont("helvetica", "bold");
+            doc.text(`Kepada Yth: ${dataGlobal.customer.name}`, 18, 62);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Alamat: ${dataGlobal.customer.address} (Kode Pos: ${dataGlobal.customer.postal})`, 18, 69);
+            doc.text(`No. HP/WA: ${dataGlobal.customer.phone}`, 18, 75);
+
+            // Detail Perangkat, Model & Serial Number
+            doc.setFillColor(250, 230, 235);
+            doc.roundedRect(15, 81, 180, 22, 3, 3, 'F');
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(165, 0, 52);
+            doc.text(`Perangkat: ${dataGlobal.deviceText} | Metode: ${dataGlobal.metode}`, 18, 89);
+            doc.text(`Model: ${dataGlobal.customer.model} | No. Seri (S/N): ${dataGlobal.customer.sn}`, 18, 97);
+            doc.setTextColor(33, 37, 41);
+
+            // Tabel Rincian
+            let startY = 109;
+            doc.setFont("helvetica", "bold");
+            doc.text("RINCIAN BIAYA", 15, startY);
+            startY += 5;
+
+            let rows = [];
+            if (dataGlobal.isCancel) {
+                rows.push(["Biaya Pembatalan / Diagnosa", formatCurrency(dataGlobal.basePrice)]);
+            } else {
+                rows.push([`Ongkos Kerja (${dataGlobal.levelName})`, formatCurrency(dataGlobal.basePrice)]);
+            }
+
+            if (dataGlobal.visitPrice > 0) {
+                rows.push(["Biaya Kunjungan Teknisi", formatCurrency(dataGlobal.visitPrice)]);
+            }
+            if (dataGlobal.eveningPrice > 0) {
+                rows.push(["Layanan Evening Care (EC)", formatCurrency(dataGlobal.eveningPrice)]);
+            }
+            if (dataGlobal.freonPrice > 0) {
+                rows.push(["Material Pengisian Freon", formatCurrency(dataGlobal.freonPrice)]);
+            }
+
+            if (dataGlobal.partsList.length > 0) {
+                dataGlobal.partsList.forEach(p => {
+                    rows.push([`Spare Part: ${p.nama}`, formatCurrency(p.harga)]);
+                });
+            }
+
+            rows.push(["PPN (11%)", formatCurrency(dataGlobal.ppn)]);
+            rows.push(["TOTAL KESELURUHAN", formatCurrency(dataGlobal.total)]);
+
+            // Render Tabel Sederhana
+            doc.setLineWidth(0.2);
+            doc.setFont("helvetica", "bold");
+            doc.setFillColor(230, 230, 230);
+            doc.rect(15, startY, 180, 8, 'F');
+            doc.text("Keterangan Item", 20, startY + 6);
+            doc.text("Jumlah (IDR)", 150, startY + 6);
+            startY += 8;
+
+            doc.setFont("helvetica", "normal");
+            rows.forEach((row, idx) => {
+                if (idx === rows.length - 1) {
+                    doc.setFont("helvetica", "bold");
+                    doc.setFillColor(254, 235, 238);
+                    doc.rect(15, startY, 180, 8, 'F');
+                }
+                doc.text(row[0], 20, startY + 6);
+                doc.text(row[1], 150, startY + 6);
+                startY += 8;
+                doc.setFont("helvetica", "normal");
+            });
+
+            // Catatan & Footer
+            startY += 6;
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(8.5);
+            doc.setTextColor(165, 0, 52);
+            doc.text("Catatan Penting:", 15, startY);
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8);
+            doc.setTextColor(90, 98, 106);
+            let notes = " Harga di atas merupakan penawaran biaya berdasarkan hasil pengecekan yang telah di lakukan teknisi , penawaran harga ini berlaku 2 Minggu , harga sewaktu waktu dapat berubah. ";
+            doc.text(notes, 15, startY + 4, { maxWidth: 180 });
+
+            // Tanda Tangan
+            startY += 20;
+            doc.text("Hormat Kami,", 150, startY, { align: "center" });
+            doc.text("PT LG Elektronik Service Indonesia", 150, startY + 16, { align: "center" });
+
+            // Output PDF
+            const pdfBlob = doc.output('blob');
+            const pdfFile = new File([pdfBlob], "Estimasi_Biaya_LG_Service.pdf", { type: "application/pdf" });
+
+            if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+                try {
+                    await navigator.share({
+                        title: 'Estimasi Biaya PT LG Elektronik Service Indonesia',
+                        text: `Berikut terlampir dokumen PDF resmi untuk customer: ${dataGlobal.customer.name}`,
+                        files: [pdfFile]
+                    });
+                    return;
+                } catch (err) {
+                    console.log("Share file dibatalkan atau tidak didukung browser.");
+                }
+            }
+
+            // Fallback Download
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = pdfUrl;
+            downloadLink.download = 'Estimasi_Biaya_LG_Service.pdf';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'PDF Berhasil Dibuat!',
+                text: 'File PDF telah diunduh ke perangkat Anda. Silakan lampirkan ke chat WhatsApp.',
+                confirmButtonColor: 'var(--primary-color)'
+            });
+        }
+
+        // Helper konversi URL gambar ke Base64 agar bisa dibaca jsPDF
+        function getBase64FromUrl(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = function(error) {
+                    reject(error);
+                };
+                img.src = url;
+            });
+        }
+
         function createInvoiceText() {
-            let txt = `*Yth. Pelanggan LG Electronics*\n`;
-            txt += `Berikut rincian estimasi biaya perbaikan produk Anda:\n\n`;
+            let c = dataGlobal.customer;
+            let txt = `*PT LG ELEKTRONIK SERVICE INDONESIA*\n`;
+            txt += `*OFFICIAL SERVICE CENTER*\n`;
+            txt += `-----------------------------------------\n`;
+            txt += `*DATA CUSTOMER:*\n`;
+            txt += `• Nama: ${c.name}\n`;
+            txt += `• Alamat: ${c.address} (Kode Pos: ${c.postal})\n`;
+            txt += `• No. HP/WA: ${c.phone}\n`;
+            txt += `-----------------------------------------\n\n`;
+            txt += `Berikut rincian resmi estimasi biaya perbaikan produk Anda:\n\n`;
             txt += `• *Perangkat:* ${dataGlobal.deviceText}\n`;
+            txt += `• *Model:* ${c.model}\n`;
+            txt += `• *No. Seri (S/N):* ${c.sn}\n`;
             txt += `• *Metode Layanan:* ${dataGlobal.metode}\n`;
             txt += `=========================\n\n`;
             txt += `*RINCIAN BIAYA:*\n`;
@@ -1265,7 +1580,7 @@
             if (dataGlobal.isCancel) {
                 txt += `• Biaya Pembatalan / Diagnosa: ${formatCurrency(dataGlobal.basePrice)}\n`;
             } else {
-                txt += `• Ongkos Kerja: ${formatCurrency(dataGlobal.basePrice)}\n`;
+                txt += `• Ongkos Kerja (${dataGlobal.levelName}): ${formatCurrency(dataGlobal.basePrice)}\n`;
             }
 
             if (dataGlobal.visitPrice > 0) {
@@ -1289,23 +1604,19 @@
             txt += `\n-------------------------\n`;
             txt += `• PPN (11%): ${formatCurrency(dataGlobal.ppn)}\n`;
             txt += `• *TOTAL PEMBAYARAN:* *${formatCurrency(dataGlobal.total)}*\n\n`;
-            txt += `*Note:* Harga yang tertera hanya estimasi / perkiraan awal. Rincian detail dan final akan disampaikan kembali oleh teknisi kami di lapangan sesuai dengan tingkat kerusakan nyata, spesifikasi, dan tipe produk Anda.\n\n`;
-            txt += `Terima kasih telah mempercayai layanan resmi LG Service Center.`;
+            txt += `*Note:* Harga tertera merupakan estimasi awal. Rincian final akan disampaikan oleh teknisi kami di lapangan.\n\n`;
+            txt += `Terima kasih telah mempercayai PT LG Elektronik Service Indonesia.`;
             return txt;
         }
 
-        async function shareInvoice() {
-            if (!document.getElementById('device').value) {
-                alert("Silakan pilih jenis perangkat terlebih dahulu.");
-                return;
-            }
+        async function shareInvoiceTextOnly() {
             const shareText = createInvoiceText();
             const btn = document.getElementById('btnShare');
 
             if (navigator.share) {
                 try {
                     await navigator.share({
-                        title: 'Rincian Biaya LG Service Center',
+                        title: 'Estimasi Biaya PT LG Elektronik Service Indonesia',
                         text: shareText
                     });
                 } catch (err) {
@@ -1318,9 +1629,9 @@
 
         function copyToClipboard(text, targetButton) {
             navigator.clipboard.writeText(text).then(() => {
-                targetButton.innerHTML = "✅ Rincian Biaya Tersalin!";
+                targetButton.innerHTML = "✅ Teks Tersalin!";
                 setTimeout(() => {
-                    targetButton.innerHTML = "📤 Bagikan Rincian Biaya";
+                    targetButton.innerHTML = "📤 Bagikan Teks WA";
                 }, 2500);
             }).catch(() => {
                 alert("Gagal menyalin otomatis. Silakan salin teks secara manual.");

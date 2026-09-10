@@ -1407,7 +1407,7 @@
             doc.setFont("helvetica", "bold");
             doc.setFontSize(12);
             doc.setTextColor(33, 37, 41);
-            doc.text("SURAT ESTIMASI BIAYA PERBAIKAN", 105, 42, { align: "center" });
+            doc.text("PENAWARAN HARGA", 105, 42, { align: "center" });
 
             // Informasi Tanggal
             const dateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -1497,7 +1497,7 @@
             doc.setFont("helvetica", "normal");
             doc.setFontSize(8);
             doc.setTextColor(90, 98, 106);
-            let notes = " Harga di atas merupakan penawaran biaya berdasarkan hasil pengecekan yang telah di lakukan teknisi , penawaran harga ini berlaku 2 Minggu , harga sewaktu waktu dapat berubah. ";
+            let notes = " Harga di atas berlaku selama 30 hari / 1 bulan , terhitung saat surat ini di terbitkan , jika terjadi pembatalan service akan di kenakan biaya diagnostic sebesar Rp. 166.500";
             doc.text(notes, 15, startY + 4, { maxWidth: 180 });
 
             // Tanda Tangan
